@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle, Clock, XCircle } from "lucide-react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
 import { UserProfile } from "@/app/admin/dashboard/components/UserProfile";
@@ -31,86 +30,17 @@ interface Users {
   created_at: string;
 }
 
-const users: User[] = [
-  {
-    name: "Amanda Harvey",
-    email: "amanda@site.com",
-    status: "Successful",
-    type: "Unassigned",
-    signedUp: "1 year ago",
-    avatar: "/avatar1.png",
-    verified: true,
-  },
-  {
-    name: "Rachel Doe",
-    email: "rachel@site.com",
-    status: "Pending",
-    type: "Unassigned",
-    signedUp: "6 months ago",
-    avatar: "",
-  },
-  {
-    name: "Costa Quinn",
-    email: "costa@site.com",
-    status: "Overdue",
-    type: "Unassigned",
-    signedUp: "1 year ago",
-    avatar: "",
-  },
-  {
-    name: "Anna Richard",
-    email: "anne@site.com",
-    status: "Successful",
-    type: "Subscription",
-    signedUp: "6 months ago",
-    avatar: "",
-  },
-  {
-    name: "Bob Dean",
-    email: "bob@site.com",
-    status: "Successful",
-    type: "Subscription",
-    signedUp: "6 months ago",
-    avatar: "",
-  },
-  {
-    name: "Mark Colbert",
-    email: "mark@site.com",
-    status: "Successful",
-    type: "Subscription",
-    signedUp: "6 months ago",
-    avatar: "",
-  },
-  {
-    name: "Finch Hoot",
-    email: "finch@site.com",
-    status: "Pending",
-    type: "Subscription",
-    signedUp: "1 year ago",
-    avatar: "",
-  },
-  {
-    name: "Ella Lauda",
-    email: "ella@site.com",
-    status: "Pending",
-    type: "Subscription",
-    signedUp: "1 year ago",
-    avatar: "/avatar2.png",
-    verified: true,
-  },
-];
+// const statusColorMap = {
+//   Successful: "text-green-600",
+//   Pending: "text-yellow-500",
+//   Overdue: "text-red-600",
+// };
 
-const statusColorMap = {
-  Successful: "text-green-600",
-  Pending: "text-yellow-500",
-  Overdue: "text-red-600",
-};
-
-const statusDotColor = {
-  Successful: "bg-green-500",
-  Pending: "bg-yellow-500",
-  Overdue: "bg-red-500",
-};
+// const statusDotColor = {
+//   Successful: "bg-green-500",
+//   Pending: "bg-yellow-500",
+//   Overdue: "bg-red-500",
+// };
 
 const UserTable = () => {
   const [search, setSearch] = useState("");
@@ -123,6 +53,7 @@ const UserTable = () => {
       const response = await api.get(API_URL.USER.GET_USERS);
       console.log(response);
       setFilteredUser(response.data);
+      setUsers(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -131,6 +62,8 @@ const UserTable = () => {
   const filteredUsers = users.filter((user) =>
     user.full_name.toLowerCase().includes(search.toLowerCase())
   );
+
+  console.log(filteredUsers);
 
   useEffect(() => {
     fetchUsers();

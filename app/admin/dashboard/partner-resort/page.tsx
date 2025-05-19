@@ -20,11 +20,6 @@ interface Resort {
   is_featured: boolean;
 }
 
-interface Place {
-  id: string;
-  name: string;
-}
-
 interface ResortFormData {
   name: string;
   location: string;

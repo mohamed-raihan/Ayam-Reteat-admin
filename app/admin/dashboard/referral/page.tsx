@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
 
-type User = {
-  name: string;
-  email: string;
-  status: "Successful" | "Pending" | "Overdue";
-  type: "Unassigned" | "Subscription";
-  signedUp: string;
-  avatar?: string;
-  verified?: boolean;
-};
+// type User = {
+//   name: string;
+//   email: string;
+//   status: "Successful" | "Pending" | "Overdue";
+//   type: "Unassigned" | "Subscription";
+//   signedUp: string;
+//   avatar?: string;
+//   verified?: boolean;
+// };
 
 interface Users {
   id: string;
@@ -28,19 +28,29 @@ const Referral = () => {
   const [filteredReferral, setFilteredReferral] = useState<Users[]>();
   const [selectedReferral, setSelectedReferral] = useState<Users | null>(null);
 
+
+  console.log(selectedReferral);
+  console.log(referral);
+
   const fetchReferral = async () => {
     try {
       const response = await api.get(API_URL.REFERRAL.GET_REFERRAL);
       console.log(response);
+      const filteredReferrals = response.data.filter((referral: Users) =>
+        referral.name.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredReferral(filteredReferrals);
       setReferral(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const filteredReferrals = referral.filter((referral) =>
-    referral.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // const filteredReferrals = referral.filter((referral) =>
+  //   referral.name.toLowerCase().includes(search.toLowerCase())
+  // );
+
+  // setFilteredReferral(filteredReferrals);
 
   useEffect(() => {
     fetchReferral();

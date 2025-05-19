@@ -11,8 +11,28 @@ interface Resort {
   uuid: string;
   name: string;
   location: string;
-  place: string;
+  place: {
+    id: string;
+    name: string;
+  };
   image: string;
+  price: string;
+  is_featured: boolean;
+}
+
+interface Place {
+  id: string;
+  name: string;
+}
+
+interface ResortFormData {
+  name: string;
+  location: string;
+  place: {
+    id: string;
+    name: string;
+  };
+  image: File | null;
   price: string;
   is_featured: boolean;
 }
@@ -21,7 +41,7 @@ const PartnerResort: FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [resorts, setResorts] = useState<Resort[]>([]);
   const [loading, setLoading] = useState(true);
-  const [resortUuid, setResortUuid] = useState<Resort | null>(null);
+  const [selectedResort, setSelectedResort] = useState<Resort | null>(null);
 
   const fetchResorts = async () => {
     try {
@@ -36,24 +56,43 @@ const PartnerResort: FC = () => {
 
   const handleEdit = (resort: Resort) => {
     setShowModal(true);
-    setResortUuid(resort);
+    setSelectedResort(resort);
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: ResortFormData & { place_id: string }) => {
     try {
-      const response = await api.post(
-        API_URL.PARTNER_RESORT.CREATE_PARTNER_RESORT,
-        data,
-        {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== null) {
+          formData.append(key, value);
+        }
+      });
+
+      if (selectedResort) {
+        // Update existing resort
+        await api.put(
+          `${API_URL.PARTNER_RESORT.UPDATE_PARTNER_RESORT}/${selectedResort.uuid}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      } else {
+        // Create new resort
+        await api.post(API_URL.PARTNER_RESORT.CREATE_PARTNER_RESORT, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
-      );
-      console.log(response);
+        });
+      }
+
       fetchResorts();
+      setShowModal(false);
+      setSelectedResort(null);
     } catch (error) {
-      console.error("Error creating resort:", error);
+      console.error("Error saving resort:", error);
     }
   };
 
@@ -66,7 +105,10 @@ const PartnerResort: FC = () => {
       <div className="flex justify-between items-center bg-violet-500 mb-4 rounded-xl py-6 px-4">
         <h2 className="text-xl font-bold text-white">Partner Resorts</h2>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setShowModal(true);
+            setSelectedResort(null);
+          }}
           className="bg-white p-2 rounded-lg shadow-stone-200 shadow-2xl flex items-center gap-2"
         >
           <Plus className="h-5 w-5" />
@@ -75,7 +117,7 @@ const PartnerResort: FC = () => {
       </div>
 
       <FormModal
-        resortUuid={resortUuid}
+        resortUuid={selectedResort}
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={handleSubmit}

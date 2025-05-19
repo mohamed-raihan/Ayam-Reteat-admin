@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useEffect, useState } from "react";
-import { Check, Edit2, Plus, X } from "lucide-react";
+import { Edit2, Plus, X } from "lucide-react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
 
@@ -20,7 +20,7 @@ interface MembershipFormData {
 }
 
 const MembershipCard: FC = () => {
-  const [memberships, setMemberships] = useState<any[]>([]);
+  const [memberships, setMemberships] = useState<MembershipFormData[]>([]);
   const [editingPlan, setEditingPlan] = useState<string | null>(null);
   const [newBenefit, setNewBenefit] = useState<Record<string, string>>({
     gold: "",
@@ -47,6 +47,8 @@ const MembershipCard: FC = () => {
     },
   });
 
+  console.log(memberships);
+
   const fetchMembership = async () => {
     try {
       const response = await api.get(API_URL.MEMBERSHIP.GET_MEMBERSHIP);
@@ -54,7 +56,7 @@ const MembershipCard: FC = () => {
       if (response.data) {
         setMemberships(response.data);
         // Update form data with existing membership data
-        response.data.forEach((membership: any) => {
+        response.data.forEach((membership: MembershipFormData) => {
           setFormData((prev) => ({
             ...prev,
             [membership.name.toLowerCase()]: {

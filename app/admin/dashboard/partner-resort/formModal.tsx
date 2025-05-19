@@ -5,17 +5,39 @@ import { X } from "lucide-react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
 
+interface Resort {
+  id: string;
+  uuid: string;
+  name: string;
+  location: string;
+  place: {
+    id: string;
+    name: string;
+  };
+  image: string;
+  price: string;
+  is_featured: boolean;
+}
+
+interface Place {
+  id: string;
+  name: string;
+}
+
+interface ResortFormData {
+  name: string;
+  location: string;
+  place: Place;
+  image: File | null;
+  price: string;
+  is_featured: boolean;
+}
+
 interface FormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
-  resortUuid: {
-    name: string;
-    location: string;
-    place: string;
-    price: string;
-    is_featured: boolean;
-  } | null;
+  onSubmit: (data: ResortFormData & { place_id: string }) => void;
+  resortUuid: Resort | null;
 }
 
 export const FormModal: FC<FormModalProps> = ({
@@ -24,14 +46,38 @@ export const FormModal: FC<FormModalProps> = ({
   onSubmit,
   resortUuid,
 }) => {
-  const [formData, setFormData] = useState({
+  const initialFormState: ResortFormData = {
     name: "",
     location: "",
-    place: "",
-    image: null as File | null,
+    place: {
+      id: "",
+      name: "",
+    },
+    image: null,
     price: "",
     is_featured: false,
-  });
+  };
+
+  const [formData, setFormData] = useState<ResortFormData>(initialFormState);
+
+  useEffect(() => {
+    if (resortUuid) {
+      console.log(resortUuid);
+      setFormData({
+        name: resortUuid.name || "",
+        location: resortUuid.location || "",
+        place: {
+          id: resortUuid.place.id || "",
+          name: resortUuid.place.name || "",
+        },
+        image: null,
+        price: resortUuid.price || "",
+        is_featured: resortUuid.is_featured || false,
+      });
+    } else {
+      setFormData(initialFormState);
+    }
+  }, [resortUuid]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -46,20 +92,26 @@ export const FormModal: FC<FormModalProps> = ({
     e.preventDefault();
 
     try {
-      // Then create the place
-      const placeResponse = await api.post(API_URL.PLACE.CREATE_PLACE, {
-        name: formData.place,
-        location: formData.location,
-      });
+      let place_id: string;
 
-      // Finally submit the resort data with the place_id
+      if (resortUuid) {
+        // For editing, use the existing place
+        place_id = resortUuid.place.id;
+      } else {
+        // For new resorts, create a new place
+        const placeResponse = await api.post(API_URL.PLACE.CREATE_PLACE, {
+          name: formData.place.name,
+          location: formData.location,
+        });
+        place_id = placeResponse.data.id;
+      }
+
       const resortData = {
-        ...formData,        
-        place_id: placeResponse.data.id,
+        ...formData,
+        place_id,
       };
 
       onSubmit(resortData);
-      onClose();
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -67,27 +119,18 @@ export const FormModal: FC<FormModalProps> = ({
 
   if (!isOpen) return null;
 
-  useEffect(() => {
-    if (resortUuid) {
-      console.log(resortUuid);
-      setFormData({
-        name: resortUuid.name,
-        location: resortUuid.location,
-        place: resortUuid.place,
-        image: null,
-        price: resortUuid.price,
-        is_featured: resortUuid.is_featured,
-      });
-    }
-  }, [resortUuid]);
-
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Add New Resort</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            {resortUuid ? "Edit Resort" : "Add New Resort"}
+          </h2>
           <button
-            onClick={onClose}
+            onClick={() => {
+              setFormData(initialFormState);
+              onClose();
+            }}
             className="text-gray-500 hover:text-gray-700"
           >
             <X className="h-6 w-6" />
@@ -132,9 +175,15 @@ export const FormModal: FC<FormModalProps> = ({
             </label>
             <input
               type="text"
-              value={formData.place}
+              value={formData.place.name}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, place: e.target.value }))
+                setFormData((prev) => ({
+                  ...prev,
+                  place: {
+                    ...prev.place,
+                    name: e.target.value,
+                  },
+                }))
               }
               placeholder="Enter the place name..."
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
@@ -151,7 +200,7 @@ export const FormModal: FC<FormModalProps> = ({
               accept="image/*"
               onChange={handleImageChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-              required
+              required={!resortUuid}
             />
           </div>
 
@@ -191,7 +240,10 @@ export const FormModal: FC<FormModalProps> = ({
           <div className="flex justify-end space-x-3 mt-6">
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                setFormData(initialFormState);
+                onClose();
+              }}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
             >
               Cancel
@@ -200,7 +252,7 @@ export const FormModal: FC<FormModalProps> = ({
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
             >
-              Add Resort
+              {resortUuid ? "Update Resort" : "Add Resort"}
             </button>
           </div>
         </form>

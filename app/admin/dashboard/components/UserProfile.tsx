@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useState, useEffect } from "react";
-import { User, Star, Plus, Minus, History, X } from "lucide-react";
+import { User, Plus, Minus, History, X } from "lucide-react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
 
@@ -38,7 +38,7 @@ export const UserProfile: FC<UserProfileProps> = ({ user, onClose }) => {
   const [reason, setReason] = useState<string>("");
   const [pointHistory, setPointHistory] = useState<PointHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [userReferral, setUserReferral] = useState<any>(null);
+  const [userReferral, setUserReferral] = useState<ReferralUser[]>([]);
 
   const calculateTotalPoints = (history: PointHistory[]) => {
     console.log(history);

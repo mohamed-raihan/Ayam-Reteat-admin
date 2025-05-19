@@ -5,15 +5,15 @@ import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
 import { UserProfile } from "@/app/admin/dashboard/components/UserProfile";
 
-type User = {
-  name: string;
-  email: string;
-  status: "Successful" | "Pending" | "Overdue";
-  type: "Unassigned" | "Subscription";
-  signedUp: string;
-  avatar?: string;
-  verified?: boolean;
-};
+// type User = {
+//   name: string;
+//   email: string;
+//   status: "Successful" | "Pending" | "Overdue";
+//   type: "Unassigned" | "Subscription";
+//   signedUp: string;
+//   avatar?: string;
+//   verified?: boolean;
+// };
 
 interface Users {
   id: string;

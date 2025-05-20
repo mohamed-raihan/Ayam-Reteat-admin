@@ -59,14 +59,14 @@ export default function Sidebar() {
         </nav>
       </div>
       <div className="mt-auto space-y-2">
-        <a
+        {/* <a
           href="#"
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-50 transition"
         >
           <FaCog className="text-lg" /> Setting
-        </a>
+        </a> */}
         <a
-          href="#"
+          href="/"
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition"
         >
           <FaSignOutAlt className="text-lg" /> Logout

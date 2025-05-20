@@ -27,4 +27,8 @@ export const API_URL = {
     DEDUCT_POINT: (id: string) => `/api/points/${id}/`,
     POINT_HISTORY: (uuid: string) => `/api/points/${uuid}/`,
   },
+
+  RESERVATION: {
+    GET_RESERVATION: "/api/forms/",
+  },
 };

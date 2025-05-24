@@ -5,6 +5,7 @@ import { Plus, Star } from "lucide-react";
 import { FormModal } from "./formModal";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
+import { toast } from "react-toastify";
 
 interface Resort {
   id: string;
@@ -41,6 +42,7 @@ const PartnerResort: FC = () => {
   const fetchResorts = async () => {
     try {
       const response = await api.get(API_URL.PARTNER_RESORT.GET_PARTNER_RESORT);
+      console.log(response.data, "response.data");
       setResorts(response.data);
     } catch (error) {
       console.error("Error fetching resorts:", error);
@@ -63,10 +65,10 @@ const PartnerResort: FC = () => {
         }
       });
 
+      let response;
       if (selectedResort) {
-        // Update existing resort
-        await api.put(
-          `${API_URL.PARTNER_RESORT.UPDATE_PARTNER_RESORT}/${selectedResort.uuid}`,
+        response = await api.patch(
+          API_URL.PARTNER_RESORT.UPDATE_PARTNER_RESORT(selectedResort.id),
           formData,
           {
             headers: {
@@ -74,22 +76,44 @@ const PartnerResort: FC = () => {
             },
           }
         );
+        console.log(response, "response");
+        toast.success("Resort updated successfully");
       } else {
-        // Create new resort
-        await api.post(API_URL.PARTNER_RESORT.CREATE_PARTNER_RESORT, formData, {
+        response = await api.post(API_URL.PARTNER_RESORT.CREATE_PARTNER_RESORT, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+        console.log(response, "response");
+        toast.success("Resort created successfully");
       }
 
-      fetchResorts();
-      setShowModal(false);
-      setSelectedResort(null);
+      await fetchResorts();
+      return response;
     } catch (error) {
       console.error("Error saving resort:", error);
+      toast.error("Error saving resort");
+      throw error;
     }
   };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await api.delete(API_URL.PARTNER_RESORT.DELETE_PARTNER_RESORT(id));
+      console.log("resort deleted");
+      toast.success("Resort deleted successfully");
+      await fetchResorts();
+    } catch (error) {
+      console.error("Error deleting resort:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedResort(null);
+  };
+
+  
 
   useEffect(() => {
     fetchResorts();
@@ -153,14 +177,24 @@ const PartnerResort: FC = () => {
                   <span className="text-lg font-bold text-violet-600">
                     ₹{resort.price.toLocaleString()}
                   </span>
-                  <button
-                    onClick={() => {
-                      handleEdit(resort);
-                    }}
-                    className="text-violet-600 hover:text-violet-700 text-sm font-medium"
-                  >
-                    Edit
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        handleEdit(resort);
+                      }}
+                      className="text-violet-600 hover:text-violet-700 text-sm font-medium"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleDelete(resort.id);
+                      }}
+                      className="text-red-600 hover:text-red-700 text-sm font-medium"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

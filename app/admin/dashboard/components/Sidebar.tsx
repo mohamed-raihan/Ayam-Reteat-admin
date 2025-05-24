@@ -9,6 +9,7 @@ import {
   FaUsers,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { MdSupervisedUserCircle } from "react-icons/md";
 
 const navLinks = [
   { name: "Dashboard", icon: <FaTachometerAlt />, href: "/admin/dashboard" },
@@ -18,8 +19,13 @@ const navLinks = [
     href: "/admin/dashboard/users",
   },
   {
-    name: "Refferals",
+    name: "Reservation",
     icon: <FaBook />,
+    href: "/admin/dashboard/reservation",
+  },
+  {
+    name: "Refferals",
+    icon: <MdSupervisedUserCircle  />,
     href: "/admin/dashboard/referral",
   },
   {
@@ -31,6 +37,11 @@ const navLinks = [
     name: "Partner Resort",
     icon: <FaUsers />,
     href: "/admin/dashboard/partner-resort",
+  },
+  {
+    name: "Resort Features",
+    icon: <FaTasks />,
+    href: "/admin/dashboard/resort-features",
   },
 ];
 

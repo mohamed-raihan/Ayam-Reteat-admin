@@ -10,6 +10,8 @@ interface Benefit {
 }
 
 interface MembershipFormData {
+  id: string; 
+  uuid: string;
   name: string;
   amount: string;
   description: string;
@@ -28,6 +30,8 @@ const MembershipCard: FC = () => {
   });
   const [formData, setFormData] = useState<Record<string, MembershipFormData>>({
     gold: {
+      id: "",
+      uuid: "",
       name: "gold",
       amount: "",
       description: "",
@@ -37,6 +41,8 @@ const MembershipCard: FC = () => {
       benefits: [],
     },
     platinum: {
+      id: "",
+      uuid: "",
       name: "platinum",
       amount: "",
       description: "",
@@ -80,13 +86,24 @@ const MembershipCard: FC = () => {
         ...formData[planType],
         referral_limit: parseInt(formData[planType].referral_limit) || 0,
       };
-      const response = await api.post(
-        API_URL.MEMBERSHIP.CREATE_MEMBERSHIP,
-        data
-      );
-      console.log("Response:", response);
-      setEditingPlan(null);
-      fetchMembership();
+      console.log("Data:", data);
+      if (data.id){
+        const response = await api.patch(
+          `${API_URL.MEMBERSHIP.UPDATE_MEMBERSHIP(data.uuid)}`,
+          data
+        );
+        console.log("Response:", response);
+        setEditingPlan(null);
+        fetchMembership();
+      }else{
+        const response = await api.post(
+          API_URL.MEMBERSHIP.CREATE_MEMBERSHIP,
+          data
+        );
+        console.log("Response:", response);
+        setEditingPlan(null);
+        fetchMembership();
+      }
     } catch (error) {
       console.error("Error:", error);
     }

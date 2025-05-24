@@ -7,7 +7,7 @@ export default function Header() {
       <div className="flex-1">
         <input
           type="text"
-          placeholder="Search your course...."
+          placeholder="Search..."
           className="w-full max-w-md px-4 py-2 text-black rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
         />
       </div>

@@ -55,7 +55,7 @@ const Referral = () => {
   return (
     <div className="p-6 bg-white rounded-xl  shadow-md">
       <div className="flex justify-between items-center bg-violet-500 mb-4 rounded-xl py-6 px-4">
-        <h2 className="text-xl font-bold text-white ">Referrals</h2>
+        <h2 className="text-xl font-bold text-white ">Reservation</h2>
         <input
           type="text"
           placeholder="Search users"
@@ -69,23 +69,25 @@ const Referral = () => {
         <table className="min-w-full text-sm    ">
           <thead>
             <tr className="border-b text-gray-500 uppercase text-xs">
-              <th className="py-3 px-2">Resort</th>
+              <th className="py-3 px-2">ID</th>
               <th className="py-3 px-2">Name</th>
               <th className="py-3 px-2">Email</th>
-              <th className="py-3 px-2">Phone</th>
+              <th className="py-3 px-2">Phone Number</th>
               <th className="py-3 px-2">Location</th>
               <th className="py-3 px-2">Check In</th>
+              <th className="py-3 px-2">Resort</th>
               <th className="py-3 px-2">Action</th>
             </tr>
           </thead>
           <tbody className="">
             {reservation?.length === 0 ? (
-              <td colSpan={5} className="text-center pt-6 text-gray-500">
+              <td colSpan={8} className="text-center pt-6 text-gray-500">
                 No user found
               </td>
             ) : (
               reservation?.map((reservation, idx) => (
                 <tr key={idx} className="hover:bg-gray-200">
+                  <td className="py-3 px-2 text-gray-700">{idx + 1}</td>
                   <td className="py-3 px-2 flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
                       {reservation.name.charAt(0)}
@@ -108,12 +110,11 @@ const Referral = () => {
                           )} */}
                     </span>
                   </td>
-                  <td className="py-3 px-2 text-gray-700">
-                    {reservation.phone_number}
-                  </td>
                   <td className="py-3 px-2 text-gray-700">{reservation.email}</td>
+                  <td className="py-3 px-2 text-gray-700">{reservation.phone_number}</td>
                   <td className="py-3 px-2 text-gray-700">{reservation.location}</td>
                   <td className="py-3 px-2 text-gray-700">{reservation.check_in}</td>
+                  <td className="py-3 px-2 text-gray-700">{reservation.resort}</td>
                   <td className="py-3 px-2 text-gray-700">
                     <button
                       className="bg-blue-500 text-white px-4 py-2 rounded-md"

@@ -4,6 +4,7 @@ import { FC, useEffect, useState } from "react";
 import { X, Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
+import { toast } from "react-toastify";
 
 interface Resort {
   id: string;
@@ -32,6 +33,9 @@ interface ResortFormData {
   image: File | null;
   price: string;
   is_featured: boolean;
+  features_ids: string[];
+  properties_ids: string[];
+  what_to_expect_contents: string;
 }
 
 interface FormDataSection {
@@ -87,6 +91,9 @@ export const FormModal: FC<FormModalProps> = ({
     image: null,
     price: "",
     is_featured: false,
+    features_ids: [],
+    properties_ids: [],
+    what_to_expect_contents: "",
   });
 
   const [formDataSection, setFormDataSection] = useState<FormDataSection>({
@@ -141,6 +148,18 @@ export const FormModal: FC<FormModalProps> = ({
         image: null,
         price: resortUuid.price || "",
         is_featured: resortUuid.is_featured || false,
+        features_ids: [],
+        properties_ids: [],
+        what_to_expect_contents: "",
+      });
+      setFormDataSection({
+        id: resortUuid.id || "",
+        logo: null,
+        title: resortUuid.place.name || "",
+        image: null,
+        description: resortUuid.place.name || "",
+        resort: resortUuid.id || "",
+        additionalImages: [],
       });
     }
   }, [resortUuid]);
@@ -166,6 +185,16 @@ export const FormModal: FC<FormModalProps> = ({
       }
     };
     input.click();
+  };
+
+  const fetchFeatures = async () => {
+    const response = await api.get(API_URL.RESORT_FEATURES.GET_RESORT_FEATURES);
+    console.log(response, "response");
+  };
+
+  const fetchProperties = async () => {
+    const response = await api.get(API_URL.RESORT_PROPERITIES.GET_RESORT_PROPERITIES);
+    console.log(response, "response");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -320,6 +349,8 @@ export const FormModal: FC<FormModalProps> = ({
             "Content-Type": "multipart/form-data",
           },
         }); 
+        toast.success("Why Choose Section updated successfully");
+        handleNextStep();
         console.log(response, "response");
       }else{
         const formData = new FormData();
@@ -335,6 +366,8 @@ export const FormModal: FC<FormModalProps> = ({
             "Content-Type": "multipart/form-data",
           },
         });
+        toast.success("Why Choose Section created successfully");
+        handleNextStep();
         console.log(response, "response");
       }
     } catch (error) {
@@ -457,7 +490,6 @@ export const FormModal: FC<FormModalProps> = ({
                 value={basicFormData.name}
                 onChange={handleBasicFormChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
               />
             </div>
 
@@ -471,7 +503,6 @@ export const FormModal: FC<FormModalProps> = ({
                 value={basicFormData.location}
                 onChange={handleBasicFormChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
               />
             </div>
 
@@ -484,7 +515,6 @@ export const FormModal: FC<FormModalProps> = ({
                 value={basicFormData.place.name}
                 onChange={handleBasicFormPlaceChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
               />
             </div>
 
@@ -497,7 +527,6 @@ export const FormModal: FC<FormModalProps> = ({
                 accept="image/*"
                 onChange={handleBasicFormFileChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required={!resortUuid}
               />
             </div>
 
@@ -511,7 +540,70 @@ export const FormModal: FC<FormModalProps> = ({
                 value={basicFormData.price}
                 onChange={handleBasicFormChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Features
+              </label>
+              <select
+                multiple
+                name="features_ids"
+                value={basicFormData.features_ids}
+                onChange={(e) => {
+                  const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                  setBasicFormData(prev => ({
+                    ...prev,
+                    features_ids: selectedOptions
+                  }));
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+              >
+                {/* Add your feature options here */}
+                <option value="1">Feature 1</option>
+                <option value="2">Feature 2</option>
+                <option value="3">Feature 3</option>
+              </select>
+              <p className="mt-1 text-sm text-gray-500">Hold Ctrl/Cmd to select multiple features</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Properties
+              </label>
+              <select
+                multiple
+                name="properties_ids"
+                value={basicFormData.properties_ids}
+                onChange={(e) => {
+                  const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                  setBasicFormData(prev => ({
+                    ...prev,
+                    properties_ids: selectedOptions
+                  }));
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+              >
+                {/* Add your property options here */}
+                <option value="1">Property 1</option>
+                <option value="2">Property 2</option>
+                <option value="3">Property 3</option>
+              </select>
+              <p className="mt-1 text-sm text-gray-500">Hold Ctrl/Cmd to select multiple properties</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                What to Expect
+              </label>
+              <textarea
+                name="what_to_expect_contents"
+                value={basicFormData.what_to_expect_contents}
+                onChange={handleBasicFormChange}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+                placeholder="Enter what guests can expect from this resort..."
               />
             </div>
 
@@ -545,7 +637,7 @@ export const FormModal: FC<FormModalProps> = ({
                 accept="image/*"
                 onChange={handleFormDataFileChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
             </div>
 
@@ -559,7 +651,7 @@ export const FormModal: FC<FormModalProps> = ({
                 value={formDataSection.title}
                 onChange={handleFormDataChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
             </div>
 
@@ -573,7 +665,7 @@ export const FormModal: FC<FormModalProps> = ({
                 accept="image/*"
                 onChange={handleFormDataFileChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
             </div>
 
@@ -587,7 +679,7 @@ export const FormModal: FC<FormModalProps> = ({
                 onChange={handleFormDataChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
                 rows={4}
-                required
+                // required
               />
             </div>
 
@@ -640,7 +732,7 @@ export const FormModal: FC<FormModalProps> = ({
                 value={welcomeSection.title}
                 onChange={handleWelcomeSectionChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
             </div>
 
@@ -654,7 +746,7 @@ export const FormModal: FC<FormModalProps> = ({
                 value={welcomeSection.highlight}
                 onChange={handleWelcomeSectionChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
             </div>
 
@@ -668,7 +760,7 @@ export const FormModal: FC<FormModalProps> = ({
                 value={welcomeSection.subtitle}
                 onChange={handleWelcomeSectionChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
             </div>
 
@@ -681,7 +773,7 @@ export const FormModal: FC<FormModalProps> = ({
                 accept="image/*"
                 onChange={handleWelcomeSectionFileChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
               {welcomeSection.image_url && (
                 <p className="mt-2 text-sm text-gray-500">
@@ -706,7 +798,7 @@ export const FormModal: FC<FormModalProps> = ({
                 value={whyChooseSection.title}
                 onChange={handleWhyChooseSectionChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
             </div>
 
@@ -720,7 +812,7 @@ export const FormModal: FC<FormModalProps> = ({
                 onChange={handleWhyChooseSectionChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
                 rows={4}
-                required
+                // required
               />
             </div>
 
@@ -733,7 +825,7 @@ export const FormModal: FC<FormModalProps> = ({
                 accept="image/*"
                 onChange={handleWhyChooseSectionFileChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                required
+                // required
               />
               {whyChooseSection.image_url && (
                 <p className="mt-2 text-sm text-gray-500">

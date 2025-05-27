@@ -65,6 +65,16 @@ interface WhyChooseSection {
   form_data: string;
 }
 
+interface Feature {
+  id: string;
+  name: string;
+}
+
+interface Property {
+  id: string;
+  name: string;
+}
+
 interface FormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -135,6 +145,9 @@ export const FormModal: FC<FormModalProps> = ({
     whyChoose: false
   });
 
+  const [features, setFeatures] = useState<Feature[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
+
   useEffect(() => {
     if (resortUuid) {
       setBasicFormData({
@@ -162,6 +175,9 @@ export const FormModal: FC<FormModalProps> = ({
         additionalImages: [],
       });
     }
+
+    fetchFeatures();
+    fetchProperties();
   }, [resortUuid]);
 
   const handleNextStep = () => {
@@ -190,11 +206,13 @@ export const FormModal: FC<FormModalProps> = ({
   const fetchFeatures = async () => {
     const response = await api.get(API_URL.RESORT_FEATURES.GET_RESORT_FEATURES);
     console.log(response, "response");
+    setFeatures(response.data);
   };
 
   const fetchProperties = async () => {
     const response = await api.get(API_URL.RESORT_PROPERITIES.GET_RESORT_PROPERITIES);
     console.log(response, "response");
+    setProperties(response.data);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -561,9 +579,13 @@ export const FormModal: FC<FormModalProps> = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
               >
                 {/* Add your feature options here */}
-                <option value="1">Feature 1</option>
-                <option value="2">Feature 2</option>
-                <option value="3">Feature 3</option>
+                {features.length > 0 ? (
+                  features.map((feature) => (
+                    <option key={feature.id} value={feature.id}>{feature.name}</option>
+                  ))
+                ) : (
+                  <option value="">No features found</option>
+                )}
               </select>
               <p className="mt-1 text-sm text-gray-500">Hold Ctrl/Cmd to select multiple features</p>
             </div>
@@ -586,9 +608,13 @@ export const FormModal: FC<FormModalProps> = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
               >
                 {/* Add your property options here */}
-                <option value="1">Property 1</option>
-                <option value="2">Property 2</option>
-                <option value="3">Property 3</option>
+                {properties.length > 0 ? (
+                  properties.map((property) => (
+                    <option key={property.id} value={property.id}>{property.name}</option>
+                  ))
+                ) : (
+                  <option value="">No properties found</option>
+                )}
               </select>
               <p className="mt-1 text-sm text-gray-500">Hold Ctrl/Cmd to select multiple properties</p>
             </div>

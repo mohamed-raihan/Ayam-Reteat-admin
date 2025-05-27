@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
 
 interface Feature {
   name: string;
+  id: string;
 }
 
 export default function ResortFeatures() {
@@ -27,6 +28,8 @@ export default function ResortFeatures() {
       try {
         const response = await api.post(API_URL.RESORT_FEATURES.CREATE_RESORT_FEATURES, { name: input });
         console.log(response, "response");
+        fetchFeatures()
+        setNoteInput("")
       } catch (error) {
         console.error("Error adding feature:", error);
       }
@@ -34,6 +37,8 @@ export default function ResortFeatures() {
       try {
         const response = await api.post(API_URL.RESORT_PROPERITIES.CREATE_RESORT_PROPERITIES, { name: input });
         console.log(response, "response");
+        fetchProperties()
+        setNoteInput("")
       } catch (error) {
         console.error("Error adding property:", error);
       }
@@ -44,6 +49,7 @@ export default function ResortFeatures() {
     try {
       const response = await api.delete(API_URL.RESORT_FEATURES.DELETE_RESORT_FEATURES(id));
       console.log(response, "response");
+      fetchFeatures()
     } catch (error) {
       console.error("Error deleting feature:", error);
     }
@@ -53,6 +59,7 @@ export default function ResortFeatures() {
     try {
       const response = await api.delete(API_URL.RESORT_PROPERITIES.DELETE_RESORT_PROPERITIES(id));
       console.log(response, "response");
+      fetchProperties()
     } catch (error) {
       console.error("Error deleting property:", error);
     }
@@ -62,6 +69,7 @@ export default function ResortFeatures() {
     try {
       const response = await api.get(API_URL.RESORT_FEATURES.GET_RESORT_FEATURES);
       console.log(response, "response");
+      setFeatures(response.data);
     } catch (error) {
       console.error("Error fetching features:", error);
     }
@@ -71,6 +79,7 @@ export default function ResortFeatures() {
     try {
       const response = await api.get(API_URL.RESORT_PROPERITIES.GET_RESORT_PROPERITIES);
       console.log(response, "response");
+      setProperties(response.data);
     } catch (error) {
       console.error("Error fetching properties:", error);
     }
@@ -107,8 +116,11 @@ export default function ResortFeatures() {
           </div>
           <div className="mt-4 space-y-2">
             {features.map((feature, index) => (
-              <div key={index} className="p-3 bg-gray-50 rounded-lg">
+              <div key={index} className="p-3 bg-gray-50 rounded-lg flex justify-between">
                 {feature.name}
+                <button onClick={() => deleteFeature(feature.id)}>
+                  <Trash className="h-5 w-5" />
+                </button>
               </div>
             ))}
           </div>
@@ -135,8 +147,11 @@ export default function ResortFeatures() {
           </div>
           <div className="mt-4 space-y-2">
             {properties.map((property, index) => (
-              <div key={index} className="p-3 bg-gray-50 rounded-lg">
+              <div key={index} className="p-3 bg-gray-50 rounded-lg flex justify-between">
                 {property.name}
+                <button onClick={() => deleteProperty(property.id)}>
+                  <Trash className="h-5 w-5" />
+                </button>
               </div>
             ))}
           </div>

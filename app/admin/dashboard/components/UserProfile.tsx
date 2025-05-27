@@ -86,7 +86,6 @@ export const UserProfile: FC<UserProfileProps> = ({ user, onClose }) => {
       const response = await api.post(API_URL.REFERRAL.ADD_POINT, {
         user_uuid: user.uuid,
         points: parseInt(pointAmount),
-        reason: reason || "Points added by admin",
       });
 
       const updatedHistory = [...pointHistory, response.data];
@@ -107,10 +106,10 @@ export const UserProfile: FC<UserProfileProps> = ({ user, onClose }) => {
     setIsLoading(true);
     try {
       const response = await api.post(
-        API_URL.REFERRAL.DEDUCT_POINT(user.uuid),
+        API_URL.REFERRAL.DEDUCT_POINT,
         {
-          points: -parseInt(pointAmount), // Make points negative for deduction
-          reason: reason || "Points deducted by admin",
+          points: -parseInt(pointAmount),
+          user_uuid: user.uuid,
         }
       );
 

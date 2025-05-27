@@ -41,7 +41,7 @@ export const API_URL = {
     GET_REFERRAL: "/api/referrals/all/",
     GET_REFERRAL_BY_ID: "/api/referrals/",
     ADD_POINT: "/api/points/",
-    DEDUCT_POINT: (id: string) => `/api/points/${id}/`,
+    DEDUCT_POINT: `/api/points/`,
     POINT_HISTORY: (uuid: string) => `/api/points/${uuid}/`,
   },
 

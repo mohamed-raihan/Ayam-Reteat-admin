@@ -14,32 +14,37 @@ import { MdSupervisedUserCircle } from "react-icons/md";
 const navLinks = [
   { name: "Dashboard", icon: <FaTachometerAlt />, href: "/admin/dashboard" },
   {
-    name: "User management",
+    name: "Homepage",
     icon: <FaUsers />,
     href: "/admin/dashboard/users",
   },
   {
-    name: "Reservation",
+    name: "Contact Us",
     icon: <FaBook />,
     href: "/admin/dashboard/reservation",
   },
+  // {
+  //   name: "About Us",
+  //   icon: <FaBook />,
+  //   href: "/admin/dashboard/about-us",
+  // },
   {
-    name: "Refferals",
+    name: "Services",
     icon: <MdSupervisedUserCircle  />,
     href: "/admin/dashboard/referral",
   },
   {
-    name: "Create Membership",
+    name: "Study Abroad",
     icon: <FaTasks />,
     href: "/admin/dashboard/create-membership",
   },
   {
-    name: "Partner Resort",
+    name: "Blogs",
     icon: <FaUsers />,
-    href: "/admin/dashboard/partner-resort",
+    href: "/admin/dashboard/blog-management",
   },
   {
-    name: "Resort Features",
+    name: "SEO",
     icon: <FaTasks />,
     href: "/admin/dashboard/resort-features",
   },
@@ -51,7 +56,7 @@ export default function Sidebar() {
   return (
     <aside className="bg-white h-[100vh] w-64 flex flex-col border-r border-gray-200 p-4">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-blue-600 mb-6">Ayam Retret</h1>
+        <h1 className="text-2xl font-bold text-blue-600 mb-6">What Next</h1>
         <nav className="space-y-2">
           {navLinks.map((link) => (
             <a

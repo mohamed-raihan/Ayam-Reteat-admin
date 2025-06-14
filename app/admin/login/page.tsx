@@ -27,7 +27,7 @@ export default function AdminLogin() {
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-violet-100">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-violet-600 mb-2">
-            Ayam Retret
+            What Next
           </h1>
           <h2 className="text-xl text-gray-600">Admin Dashboard</h2>
         </div>

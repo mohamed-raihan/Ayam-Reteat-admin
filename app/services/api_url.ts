@@ -1,63 +1,67 @@
 export const API_URL = {
-  USER: {
-    GET_USERS: "/api/register/",
-    GET_USER: (uuid: string) => `/api/register/${uuid}/`,
+  HOME: {
+      SUCCESS_VIDEOS: '/api/video/',
+      ADD_SUCCESS_VIDEO: '/api/video/',
+      DELETE_SUCCESS_VIDEO: (id: string) => `/api/video/${id}`,
+      UPDATE_SUCCESS_VIDEO: (id: string) => `/api/video/${id}`,
+      GET_REVIEWS: '/api/student-review/',
+      ADD_REVIEW: '/api/student-review/',
+      DELETE_REVIEW: (id: string) => `/api/student-review/${id}`,
+      UPDATE_REVIEW: (id: string) => `/api/student-review/${id}`,
+      REVIEWS: '/api/student-review/',
   },
-  MEMBERSHIP: {
-    GET_MEMBERSHIP: "/api/subscription/list/",
-    GET_MEMBERSHIP_BY_ID: (uuid: string) => `/api/subscription/list/${uuid}/`,
-    CREATE_MEMBERSHIP: "/api/subscription/create/",
-    UPDATE_MEMBERSHIP: (uuid: string) => `/api/subscription/${uuid}/`,
-    DELETE_MEMBERSHIP: (uuid: string) => `/api/subscription/${uuid}/`,
+  SERVICES: {
+      GET_SERVICE_HEADING: '/api/service-header/',
+      CREATE_SERVICE_HEADING: '/api/service-header/',
+      PATCH_SERVICE_HEADING: (id: string) => `/api/service-header/${id}/`,
+      DELETE_SERVICE_HEADING: (id: string) => `/api/service-header/${id}/`,
+      GET_SERVICE_DETAILS: '/api/service-body/',
+      CREATE_SERVICE_DETAILS: '/api/service-body/',
+      PATCH_SERVICE_DETAILS: (id: string) => `/api/service-body/${id}/`,
+      DELETE_SERVICE_DETAILS: (id: string) => `/api/service-body/${id}/`,
   },
-  PARTNER_RESORT: {
-    GET_PARTNER_RESORT: "/api/resorts/",
-    GET_PARTNER_RESORT_BY_ID: (uuid: string) => `/api/resorts/${uuid}/`,
-    CREATE_PARTNER_RESORT: "/api/resorts/",
-    UPDATE_PARTNER_RESORT: (uuid: string) => `/api/resorts/${uuid}/`,
-    DELETE_PARTNER_RESORT: (uuid: string) => `/api/resorts/${uuid}/`,
+  BLOGS: {
+      POST_BLOG_CATEGORIES: '/api/blog-category/',
+      GET_BLOG_CATEGORIES: '/api/blog-category/',
+      PATCH_BLOG_CATEGORY: (id: string) => `/api/blog-category/${id}/`,
+      DELETE_BLOG_CATEGORY: (id: string) => `/api/blog-category/${id}/`,
+      GET_BLOG_HEADERS: '/api/blog-heading/',
+      POST_BLOG_HEADERS: '/api/blog-heading/',
+      PATCH_BLOG_HEADERS: (id: string) => `/api/blog-heading/${id}/`,
+      DELETE_BLOG_HEADERS: (id: string) => `/api/blog-heading/${id}/`,
+      GET_BLOGS: '/api/blogs/',
+      POST_BLOGS: '/api/blogs/',
+      PATCH_BLOGS: (id: string) => `/api/blogs/${id}/`,
+      DELETE_BLOGS: (id: string) => `/api/blogs/${id}/`,
   },
-
-  RESORT_FORMDATA:{
-    CREATE_RESORT_FORMDATA: "/api/form-data/",
-    EDIT_RESORT_FORMDATA: (id: string) => `/api/form-data/${id}/`,
-    IMAGE_UPLOAD:(uuid:string) => `/api/form-data/${uuid}/upload-multiple-images/`,
+  BLOG_INNER: {
+    GET_BLOG_INNER: '/api/blog-inner/',
+    POST_BLOG_INNER: '/api/blog-inner/',
+    PATCH_BLOG_INNER: (id: string) => `/api/blog-inner/${id}/`,
+    DELETE_BLOG_INNER: (id: string) => `/api/blog-inner/${id}/`,
   },
-
-  RESORT_WELLCOME:{
-    CREATE_RESORT_WELLCOME: "/api/welcome/",
-    EDIT_RESORT_WELLCOME: (id: string) => `/api/welcome/${id}/`,
+  COUNTRIES: {
+    GET_COUNTRIES: '/api/countries',
+    POST_COUNTRY: '/api/countries',
+    PATCH_COUNTRY: (id: string) => `/api/countries/${id}`,
+    DELETE_COUNTRY: (id: number | string) => `/api/countries/${id}`,
   },
-
-  RESORT_WHYCHOOSE:{
-    CREATE_RESORT_WHYCHOOSE: "/api/whychoose/",
-    EDIT_RESORT_WHYCHOOSE: (id: string) => `/api/whychoose/${id}/`,
+  UNIVERSITIES: {
+    GET_UNIVERSITIES: '/api/university',
+    POST_UNIVERSITY: '/api/university',
+    PATCH_UNIVERSITY: (id: string) => `/api/university/${id}`,
+    DELETE_UNIVERSITY: (id: number | string) => `/api/university/${id}`,
   },
-
-  PLACE: {
-    CREATE_PLACE: "/api/place/",
+  WHY_CHOOSE_REASONS: {
+    GET_WHY_CHOOSE_REASONS: '/api/why-choose',
+    POST_WHY_CHOOSE_REASON: '/api/why-choose',
+    PATCH_WHY_CHOOSE_REASON: (id: string) => `/api/why-choose/${id}`,
+    DELETE_WHY_CHOOSE_REASON: (id: number | string) => `/api/why-choose/${id}`,
   },
-  REFERRAL: {
-    GET_REFERRAL: "/api/referrals/all/",
-    GET_REFERRAL_BY_ID: "/api/referrals/",
-    ADD_POINT: "/api/points/",
-    DEDUCT_POINT: `/api/points/`,
-    POINT_HISTORY: (uuid: string) => `/api/points/${uuid}/`,
-  },
-
-  RESERVATION: {
-    GET_RESERVATION: "/api/forms/",
-  },
-
-  RESORT_FEATURES: {
-    GET_RESORT_FEATURES: "/api/features/",
-    CREATE_RESORT_FEATURES: "/api/features/",
-    DELETE_RESORT_FEATURES: (id: string) => `/api/features/${id}/`,
-  },
-
-  RESORT_PROPERITIES: {
-    GET_RESORT_PROPERITIES: "/api/properties/",
-    CREATE_RESORT_PROPERITIES: "/api/properties/",
-    DELETE_RESORT_PROPERITIES: (id: string) => `/api/properties/${id}/`,
-  },
-};
+  CONTACT: {
+    GET_CONTACT: '/api/contact',
+    POST_CONTACT: '/api/contact',
+    PATCH_CONTACT: (id: string) => `/api/contact/${id}`,
+    DELETE_CONTACT: (id: number | string) => `/api/contact/${id}`,
+  },  
+}

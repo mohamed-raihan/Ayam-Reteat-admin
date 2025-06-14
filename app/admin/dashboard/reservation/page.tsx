@@ -15,12 +15,11 @@ import { API_URL } from "@/app/services/api_url";
 // };
 
 interface Reservation {
-  resort: string;
+  id: number;
   name: string;
   email: string;
   phone_number: string;
-  location: string;
-  check_in: string;
+  find_us: string;  
 }
 
 const Referral = () => {
@@ -35,7 +34,7 @@ const Referral = () => {
 
   const fetchReservation = async () => {
     try {
-      const response = await api.get(API_URL.RESERVATION.GET_RESERVATION);
+      const response = await api.get(API_URL.CONTACT.GET_CONTACT);
       console.log(response);
       setReservation(response.data);
     } catch (error) {
@@ -73,9 +72,7 @@ const Referral = () => {
               <th className="py-3 px-2">Name</th>
               <th className="py-3 px-2">Email</th>
               <th className="py-3 px-2">Phone Number</th>
-              <th className="py-3 px-2">Location</th>
-              <th className="py-3 px-2">Check In</th>
-              <th className="py-3 px-2">Resort</th>
+              <th className="py-3 px-2">Find Us</th>
               <th className="py-3 px-2">Action</th>
             </tr>
           </thead>
@@ -110,11 +107,11 @@ const Referral = () => {
                           )} */}
                     </span>
                   </td>
+                  <td className="py-3 px-2 text-gray-700">{reservation.id}</td>
+                  <td className="py-3 px-2 text-gray-700">{reservation.name}</td>
                   <td className="py-3 px-2 text-gray-700">{reservation.email}</td>
                   <td className="py-3 px-2 text-gray-700">{reservation.phone_number}</td>
-                  <td className="py-3 px-2 text-gray-700">{reservation.location}</td>
-                  <td className="py-3 px-2 text-gray-700">{reservation.check_in}</td>
-                  <td className="py-3 px-2 text-gray-700">{reservation.resort}</td>
+                  <td className="py-3 px-2 text-gray-700">{reservation.find_us}</td>
                   <td className="py-3 px-2 text-gray-700">
                     <button
                       className="bg-blue-500 text-white px-4 py-2 rounded-md"

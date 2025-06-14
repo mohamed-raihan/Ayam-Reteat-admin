@@ -92,8 +92,8 @@ export const FormModal: FC<FormModalProps> = ({
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
-  // Form Data States
-  const [basicFormData, setBasicFormData] = useState<ResortFormData>({
+  // Initial state values for a new resort
+  const initialBasicFormData = {
     id: "",
     name: "",
     location: "",
@@ -104,9 +104,9 @@ export const FormModal: FC<FormModalProps> = ({
     features_ids: [],
     properties_ids: [],
     what_to_expect_contents: "",
-  });
+  };
 
-  const [formDataSection, setFormDataSection] = useState<FormDataSection>({
+  const initialFormDataSection = {
     id: "",
     logo: null,
     title: "",
@@ -114,24 +114,30 @@ export const FormModal: FC<FormModalProps> = ({
     description: "",
     resort: "",
     additionalImages: [],
-  });
+  };
 
-  const [welcomeSection, setWelcomeSection] = useState<WelcomeSection>({
+  const initialWelcomeSection = {
     id: "",
     title: "",
     highlight: "",
     subtitle: "",
     image_url: null,
     form_data: "",
-  });
+  };
 
-  const [whyChooseSection, setWhyChooseSection] = useState<WhyChooseSection>({
+  const initialWhyChooseSection = {
     id: "",
     title: "",
     description: "",
     image_url: null,
     form_data: "",
-  });
+  };
+
+  // Form Data States
+  const [basicFormData, setBasicFormData] = useState<ResortFormData>(initialBasicFormData);
+  const [formDataSection, setFormDataSection] = useState<FormDataSection>(initialFormDataSection);
+  const [welcomeSection, setWelcomeSection] = useState<WelcomeSection>(initialWelcomeSection);
+  const [whyChooseSection, setWhyChooseSection] = useState<WhyChooseSection>(initialWhyChooseSection);
 
   // Response UUIDs
   const [resortResponseUuid, setResortResponseUuid] = useState("");
@@ -150,6 +156,7 @@ export const FormModal: FC<FormModalProps> = ({
 
   useEffect(() => {
     if (resortUuid) {
+      // If editing an existing resort
       setBasicFormData({
         id: resortUuid.id || "",
         name: resortUuid.name || "",
@@ -174,6 +181,12 @@ export const FormModal: FC<FormModalProps> = ({
         resort: resortUuid.id || "",
         additionalImages: [],
       });
+    } else {
+      // If adding a new resort, reset all forms to initial state
+      setBasicFormData(initialBasicFormData);
+      setFormDataSection(initialFormDataSection);
+      setWelcomeSection(initialWelcomeSection);
+      setWhyChooseSection(initialWhyChooseSection);
     }
 
     fetchFeatures();
@@ -251,6 +264,9 @@ export const FormModal: FC<FormModalProps> = ({
       formData.append('image', formDataSection.image as File);
       formData.append('description', formDataSection.description);
       formData.append('resort', resortResponseUuid);
+
+      console.log(formData);
+      
 
       let formDataResponse;
       if (formDataSection.id) {
@@ -368,7 +384,7 @@ export const FormModal: FC<FormModalProps> = ({
           },
         }); 
         toast.success("Why Choose Section updated successfully");
-        handleNextStep();
+        onClose();
         console.log(response, "response");
       }else{
         const formData = new FormData();
@@ -385,7 +401,7 @@ export const FormModal: FC<FormModalProps> = ({
           },
         });
         toast.success("Why Choose Section created successfully");
-        handleNextStep();
+        onClose();
         console.log(response, "response");
       }
     } catch (error) {
@@ -762,7 +778,7 @@ export const FormModal: FC<FormModalProps> = ({
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Highlight
               </label>
@@ -774,7 +790,7 @@ export const FormModal: FC<FormModalProps> = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
                 // required
               />
-            </div>
+            </div> */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

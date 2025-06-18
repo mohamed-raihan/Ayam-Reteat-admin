@@ -2,14 +2,28 @@ import React, { useEffect, useState } from 'react';
 import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
 import { toast } from 'react-toastify';
+import { BlogCategory } from './Blog-innerTable';
 
 interface Blog {
   id: number;
   title: string;
 }
 
+export interface editData {
+  id: number ;
+  blog: number;
+  blog_category: BlogCategory;
+  blog_image: string;
+  author: string;
+  date: string;
+  description: string;
+  slug: string;
+  time: string;
+  title: string;
+}
+
 interface BlogInnerFormProps {
-  editData?: any;
+  editData?: editData;
   onSuccess?: () => void;
   onClose?: () => void;
   fetchBlogInners?: () => void;
@@ -17,6 +31,8 @@ interface BlogInnerFormProps {
 }
 
 const BlogInnerForm: React.FC<BlogInnerFormProps> = ({ editData, onSuccess, onClose, fetchBlogInners, setShowModal }) => {
+  console.log(editData);
+  
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [form, setForm] = useState({
     blog: '',
@@ -32,6 +48,9 @@ const BlogInnerForm: React.FC<BlogInnerFormProps> = ({ editData, onSuccess, onCl
         const res = await api.get(API_URL.BLOGS.GET_BLOGS);
         setBlogs(res.data);
       } catch (err) {
+
+        console.log(err);
+        
         // ignore for now
       }
     };
@@ -41,7 +60,7 @@ const BlogInnerForm: React.FC<BlogInnerFormProps> = ({ editData, onSuccess, onCl
   useEffect(() => {
     if (editData) {
       setForm({
-        blog: editData.blog || '',
+        blog: editData.blog ? String(editData.blog) : '',
         description: editData.description || '',
       });
     }
@@ -76,7 +95,9 @@ const BlogInnerForm: React.FC<BlogInnerFormProps> = ({ editData, onSuccess, onCl
       if (onClose) onClose();
       if (setShowModal) setShowModal(false);
       toast.success('Blog Inner saved successfully!');
-    } catch (err: any) {
+    } catch (err) {
+      console.log(err);
+      
       setError('Failed to save Blog Inner.');
       toast.error('Failed to save Blog Inner.');
       setLoading(false);

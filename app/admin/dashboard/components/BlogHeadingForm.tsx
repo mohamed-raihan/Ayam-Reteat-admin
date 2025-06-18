@@ -23,7 +23,9 @@ const BlogHeadingForm = ({ fetchHeadings, setShowModal }: { fetchHeadings: () =>
       setShowModal(false);
       toast.success('Heading created successfully!');
       setLoading(false);
-    } catch (err: any) {
+    } catch (err) {
+      console.log(err);
+      
       setError('Failed to create heading.');
       toast.error('Failed to create heading.');
     }

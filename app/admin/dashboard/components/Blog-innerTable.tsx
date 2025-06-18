@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
-import BlogInnerForm from './Blog-innerForm';
+import BlogInnerForm, { editData } from './Blog-innerForm';
 
 export interface BlogCategory {
     id: number;
@@ -26,7 +26,7 @@ const BlogInnerTable = ({ blogInners, fetchBlogInners }: { blogInners: BlogInner
     // const [blogs, setBlogs] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [editData, setEditData] = useState<BlogInner | null>(null);
+    const [editData, setEditData] = useState<editData | null>(null);
     const [showForm, setShowForm] = useState(false);
 
     //   const fetchBlogInners = async () => {
@@ -64,6 +64,8 @@ const BlogInnerTable = ({ blogInners, fetchBlogInners }: { blogInners: BlogInner
             await api.delete(API_URL.BLOG_INNER.DELETE_BLOG_INNER(id));
             fetchBlogInners();
         } catch (err) {
+            console.log(err);
+            
             setError('Failed to delete Blog Inner.');
         } finally {
             setLoading(false);
@@ -129,7 +131,7 @@ const BlogInnerTable = ({ blogInners, fetchBlogInners }: { blogInners: BlogInner
                             ×
                         </button>
                         <BlogInnerForm
-                            editData={editData}
+                            editData={editData ?? undefined}
                             onSuccess={() => { setShowForm(false); setEditData(null); fetchBlogInners(); }}
                             onClose={() => { setShowForm(false); setEditData(null); }}
                             fetchBlogInners={fetchBlogInners}

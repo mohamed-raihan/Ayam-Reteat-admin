@@ -28,10 +28,7 @@ const Referral = () => {
   const [search, setSearch] = useState("");
   const [reservation, setReservation] = useState<Reservation[]>([]);
 //   const [filteredReservation, setFilteredReservation] = useState<Users[]>();
-  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
 
-
-  console.log(selectedReservation);
   console.log(reservation);
 
   const fetchReservation = async () => {

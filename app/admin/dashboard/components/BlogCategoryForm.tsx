@@ -23,7 +23,8 @@ const BlogCategoryForm = ({ fetchCategories, setShowModal }: { fetchCategories: 
       toast.success('Category created successfully!');
       setLoading(false);
       setShowModal(false);
-    } catch (err: any) {
+    } catch (err) {
+      console.log(err);
       setError('Failed to create category.');
       toast.error('Failed to create category.');
       setLoading(false);

@@ -34,6 +34,8 @@ const BlogList = ({ fetchBlogs }: { fetchBlogs: () => void }) => {
         setBlogs(res.data);
         fetchBlogs();
       } catch (err) {
+        console.log(err);
+        
         setError('Failed to fetch blogs.');
         toast.error('Failed to fetch blogs.');
       } finally {

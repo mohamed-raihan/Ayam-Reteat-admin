@@ -37,7 +37,7 @@ export const API_URL = {
   BLOG_INNER: {
     GET_BLOG_INNER: '/api/blog-inner/',
     POST_BLOG_INNER: '/api/blog-inner/',
-    PATCH_BLOG_INNER: (id: string) => `/api/blog-inner/${id}/`,
+    PATCH_BLOG_INNER: (id: number | string) => `/api/blog-inner/${id}/`,
     DELETE_BLOG_INNER: (id: number) => `/api/blog-inner/${id}/`,
   },
   COUNTRIES: {

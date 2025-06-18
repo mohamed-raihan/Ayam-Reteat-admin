@@ -40,16 +40,21 @@ const BlogCreateForm = ({ fetchCategories, setShowModal }: { fetchCategories: ()
         setCategories(catRes.data);
         setHeadings(headRes.data);
       } catch (err) {
+        console.log(err);
+        
         // ignore for now
       }
     };
     fetchData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type, files } = e.target as any;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
     if (type === 'file') {
-      setForm((prev) => ({ ...prev, [name]: files[0] }));
+      const target = e.target as HTMLInputElement;
+      setForm((prev) => ({ ...prev, [name]: target.files ? target.files[0] : null }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }

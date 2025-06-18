@@ -268,8 +268,9 @@ const StudyAbroadCMS = () => {
         await api.delete(API_URL.WHY_CHOOSE_REASONS.DELETE_WHY_CHOOSE_REASON(id));
         setWhyChooseReasons(whyChooseReasons.filter(r => r.id !== id));
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'An error occurred while deleting the item');
+    } catch (err) {
+      console.log(err);
+      
     } finally {
       setIsLoading(false);
     }

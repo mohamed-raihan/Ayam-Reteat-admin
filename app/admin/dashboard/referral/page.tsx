@@ -52,7 +52,9 @@ export default function ReferralServicePage() {
     try {
       const res = await api.get(API_URL.SERVICES.GET_SERVICE_DETAILS);
       setServices(res.data);
-    } catch (e: any) {
+    } catch (e) {
+      console.log(e);
+      
       setError('Failed to load services.');
     } finally {
       setLoading(false);
@@ -79,9 +81,10 @@ export default function ReferralServicePage() {
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value, type, files } = e.target as any;
+    const { name, value, type } = e.target;
     if (type === 'file') {
-      setForm((prev) => ({ ...prev, [name]: files[0] }));
+      const target = e.target as HTMLInputElement;
+      setForm((prev) => ({ ...prev, [name]: target.files ? target.files[0] : '' }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -131,15 +134,16 @@ export default function ReferralServicePage() {
       setSuccess('Service saved successfully!');
       fetchServices();
       closeModal();
-    } catch (e: any) {
+    } catch (e) {
       console.log(e);
-      setError(e.message || 'Failed to save service.');
     } finally {
       setLoading(false);
     }
   }
 
   async function handleDelete(id: number, headerId: number) {
+    console.log(headerId);
+    
     if (!confirm('Are you sure you want to delete this service?')) return;
     setLoading(true);
     setError(null);
@@ -149,6 +153,8 @@ export default function ReferralServicePage() {
       setSuccess('Service deleted.');
       fetchServices();
     } catch (e) {
+      console.log(e);
+      
       setError('Failed to delete service.');
     } finally {
       setLoading(false);

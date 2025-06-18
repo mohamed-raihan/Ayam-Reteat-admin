@@ -56,10 +56,13 @@ interface BlogInner {
 export default function BlogManagementPage() {
   const [activeTab, setActiveTab] = useState("blogs");
   const [showModal, setShowModal] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [headings, setHeadings] = useState<Heading[]>([]);
   const [blogInners, setBlogInners] = useState<BlogInner[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
+
+  console.log(blogs);
+  
 
   const fetchBlogs = async () => {
     const response = await api.get(API_URL.BLOGS.GET_BLOGS);

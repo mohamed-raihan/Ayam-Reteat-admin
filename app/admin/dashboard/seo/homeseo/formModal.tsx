@@ -38,6 +38,10 @@ interface SeoModalProps {
   onSuccess: () => void;
 }
 
+function isFileOrBlob(value: unknown): value is File | Blob {
+  return value instanceof File || value instanceof Blob;
+}
+
 export default function SeoModal({ initialData, onClose, onSuccess }: SeoModalProps) {
   const [form, setForm] = useState({
     title: initialData?.title || '',
@@ -88,7 +92,11 @@ export default function SeoModal({ initialData, onClose, onSuccess }: SeoModalPr
       const formData = new FormData();
       Object.entries(form).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          formData.append(key, value as any);
+          if (isFileOrBlob(value)) {
+            formData.append(key, value);
+          } else {
+            formData.append(key, String(value));
+          }
         }
       });
       const response = await api.post(API_URL.SEO.HOME_SEO, formData, {

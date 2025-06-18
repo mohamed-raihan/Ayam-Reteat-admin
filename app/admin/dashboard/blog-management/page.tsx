@@ -4,25 +4,93 @@ import BlogCategoryForm from "../components/BlogCategoryForm";
 import BlogHeadingForm from "../components/BlogHeadingForm";
 import BlogCreateForm from "../components/BlogCreateForm";
 import BlogList from "../components/BlogList";
+import BlogCategoryTable from "../components/BlogCategoryTable";
+import BlogHeadingTable from "../components/BlogHeadingTable";
+import BlogInnerTable, { BlogCategory } from "../components/Blog-innerTable";
+import BlogInnerForm from "../components/Blog-innerForm";
+import { API_URL } from "@/app/services/api_url";
+import api from "@/app/services/api";
 
 const TABS = [
   { key: "categories", label: "Categories" },
   { key: "headings", label: "Headings" },
   { key: "blogs", label: "Blogs" },
+  { key: "blogs inner", label: "Blogs Inner" },
 ];
+
+interface Blog {
+  id: number;
+  title: string;
+  content: string;
+  category: number;
+  image?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  description?: string;
+}
+
+interface Heading {
+  id: number;
+  title: string;
+  description?: string;
+}
+
+interface BlogInner {
+  id: number ;
+    blog: number;
+    blog_category: BlogCategory;
+    blog_image: string;
+    author: string;
+    date: string;
+    description: string;
+    slug: string;
+    time: string;
+    title: string;
+}
 
 export default function BlogManagementPage() {
   const [activeTab, setActiveTab] = useState("blogs");
   const [showModal, setShowModal] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [headings, setHeadings] = useState<Heading[]>([]);
+  const [blogInners, setBlogInners] = useState<BlogInner[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+
+  const fetchBlogs = async () => {
+    const response = await api.get(API_URL.BLOGS.GET_BLOGS);
+    setBlogs(response.data);
+  };
+
+  const fetchCategories = async () => {
+    const response = await api.get(API_URL.BLOGS.GET_BLOG_CATEGORIES);
+    setCategories(response.data);
+  };
+
+  const fetchHeadings = async () => {
+    const response = await api.get(API_URL.BLOGS.GET_BLOG_HEADERS);
+    setHeadings(response.data);
+  };
+
+  const fetchBlogInners = async () => {
+    const response = await api.get(API_URL.BLOG_INNER.GET_BLOG_INNER);
+    setBlogInners(response.data);
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "blogs":
-        return <BlogList />;
+        return <BlogList  fetchBlogs={fetchBlogs} />;
       case "categories":
-        return null;
+        return <BlogCategoryTable categories={categories} fetchCategories={fetchCategories} />;
       case "headings":
-        return null;
+        return <BlogHeadingTable headings={headings} fetchHeadings={fetchHeadings} />;
+      case "blogs inner":
+        return <BlogInnerTable blogInners={blogInners} fetchBlogInners={fetchBlogInners} />;
       default:
         return null;
     }
@@ -77,10 +145,18 @@ export default function BlogManagementPage() {
             + Add Heading
           </button>
         )}
+        {activeTab === "blogs inner" && (
+          <button
+            onClick={() => setShowModal(true)}
+            className="ml-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            + Add Blog Inner
+          </button>
+        )}
       </div>
 
       {/* Tab Content */}
-      <div className="max-w-4xl mx-auto">{renderTabContent()}</div>
+      <div className=" mx-auto w-full">{renderTabContent()}</div>
 
       {/* Modal for Forms */}
       {showModal && (
@@ -92,9 +168,10 @@ export default function BlogManagementPage() {
             >
               ×
             </button>
-            {activeTab === "blogs" && <BlogCreateForm />}
-            {activeTab === "categories" && <BlogCategoryForm />}
-            {activeTab === "headings" && <BlogHeadingForm />}
+            {activeTab === "blogs" && <BlogCreateForm fetchCategories={fetchCategories} setShowModal={setShowModal}/>}
+            {activeTab === "categories" && <BlogCategoryForm fetchCategories={fetchCategories} setShowModal={setShowModal} />}
+            {activeTab === "headings" && <BlogHeadingForm fetchHeadings={fetchHeadings} setShowModal={setShowModal} />}
+            {activeTab === "blogs inner" && <BlogInnerForm fetchBlogInners={fetchBlogInners} setShowModal={setShowModal} />}
           </div>
         </div>
       )}

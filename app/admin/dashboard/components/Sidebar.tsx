@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -46,7 +45,7 @@ const navLinks = [
   {
     name: "SEO",
     icon: <FaTasks />,
-    href: "/admin/dashboard/resort-features",
+    href: "/admin/dashboard/seo/homeseo",
   },
 ];
 

@@ -12,7 +12,7 @@ export default function AdminLogin() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (email === "admin@ayamretreat.com" && password === "admin") {
+    if (email === "admin@whatnext.com" && password === "admin") {
       console.log("Form submitted");
       router.push("/admin/dashboard");
       toast.success("Login successful", {

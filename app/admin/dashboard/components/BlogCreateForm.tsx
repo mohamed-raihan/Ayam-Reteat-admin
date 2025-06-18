@@ -2,8 +2,16 @@
 import React, { useState, useEffect } from 'react';
 import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
+import { toast } from 'react-toastify';
+import { BlogCategory } from './Blog-innerTable';
 
-const BlogCreateForm = () => {
+interface Heading {
+  id: number;
+  title: string;
+  description?: string;
+}
+
+const BlogCreateForm = ({ fetchCategories, setShowModal }: { fetchCategories: () => void, setShowModal: (show: boolean) => void }) => {
   const [form, setForm] = useState({
     country_name: '',
     title: '',
@@ -15,8 +23,8 @@ const BlogCreateForm = () => {
     blog_category: '',
     blog_heading: '',
   });
-  const [categories, setCategories] = useState<any[]>([]);
-  const [headings, setHeadings] = useState<any[]>([]);
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
+  const [headings, setHeadings] = useState<Heading[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +69,9 @@ const BlogCreateForm = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setSuccess('Blog created successfully!');
+      fetchCategories();
+      setShowModal(false);
+      toast.success('Blog created successfully!');
       setForm({
         country_name: '',
         title: '',
@@ -72,9 +83,10 @@ const BlogCreateForm = () => {
         blog_category: '',
         blog_heading: '',
       });
-    } catch (err: any) {
+    } catch (err) {
+      console.log(err);
       setError('Failed to create blog.');
-    } finally {
+      toast.error('Failed to create blog.');
       setLoading(false);
     }
   };
@@ -90,13 +102,13 @@ const BlogCreateForm = () => {
       <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" rows={4} required />
       <select name="blog_category" value={form.blog_category} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" required>
         <option value="">Select Category</option>
-        {categories.map((cat: any) => (
+        {categories.map((cat: BlogCategory) => (
           <option key={cat.id} value={cat.id}>{cat.title}</option>
         ))}
       </select>
       <select name="blog_heading" value={form.blog_heading} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" required>
         <option value="">Select Heading</option>
-        {headings.map((head: any) => (
+        {headings.map((head: Heading) => (
           <option key={head.id} value={head.id}>{head.title}</option>
         ))}
       </select>

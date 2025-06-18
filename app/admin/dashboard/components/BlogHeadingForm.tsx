@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
+import { toast } from 'react-toastify';
 
-const BlogHeadingForm = () => {
+const BlogHeadingForm = ({ fetchHeadings, setShowModal }: { fetchHeadings: () => void, setShowModal: (show: boolean) => void }) => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -18,10 +19,13 @@ const BlogHeadingForm = () => {
       await api.post(API_URL.BLOGS.POST_BLOG_HEADERS, { title });
       setSuccess('Heading created successfully!');
       setTitle('');
+      fetchHeadings();
+      setShowModal(false);
+      toast.success('Heading created successfully!');
+      setLoading(false);
     } catch (err: any) {
       setError('Failed to create heading.');
-    } finally {
-      setLoading(false);
+      toast.error('Failed to create heading.');
     }
   };
 

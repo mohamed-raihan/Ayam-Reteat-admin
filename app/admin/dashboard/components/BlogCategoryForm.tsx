@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
+import { toast } from 'react-toastify';
 
-const BlogCategoryForm = () => {
+const BlogCategoryForm = ({ fetchCategories, setShowModal }: { fetchCategories: () => void, setShowModal: (show: boolean) => void }) => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -18,9 +19,13 @@ const BlogCategoryForm = () => {
       await api.post(API_URL.BLOGS.POST_BLOG_CATEGORIES, { title });
       setSuccess('Category created successfully!');
       setTitle('');
+      fetchCategories();
+      toast.success('Category created successfully!');
+      setLoading(false);
+      setShowModal(false);
     } catch (err: any) {
       setError('Failed to create category.');
-    } finally {
+      toast.error('Failed to create category.');
       setLoading(false);
     }
   };

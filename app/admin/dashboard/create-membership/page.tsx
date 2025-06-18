@@ -13,8 +13,8 @@ interface Country {
   icon: string;
   slug: string;
   status: string;
-  universities: any[];
-  why_choose_reasons: any[];
+  universities: University[];
+  why_choose_reasons: WhyChooseReason[];
 }
 
 interface University {
@@ -32,12 +32,25 @@ interface WhyChooseReason {
   country: number;
 }
 
+interface FormDataType {
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string | File;
+  icon: string | File;
+  slug: string;
+  country: string | number;
+  logo: string | File;
+}
+
+type EditingItem = Country | University | WhyChooseReason | null;
+
 const StudyAbroadCMS = () => {
   const [activeTab, setActiveTab] = useState('countries');
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
-  const [editingItem, setEditingItem] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<EditingItem>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -104,7 +117,7 @@ const StudyAbroadCMS = () => {
     }
   ]);
 
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<FormDataType>({
     title: '',
     subtitle: '',
     description: '',
@@ -181,33 +194,58 @@ const StudyAbroadCMS = () => {
     try {
       if (modalType === 'country') {
         if (editingItem) {
-          const response = await api.patch(API_URL.COUNTRIES.PATCH_COUNTRY(editingItem.id), formData);
+          const response = await api.patch(API_URL.COUNTRIES.PATCH_COUNTRY(editingItem.id), formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
           setCountries(countries.map(c => c.id === editingItem.id ? response.data : c));
         } else {
-          const response = await api.post(API_URL.COUNTRIES.POST_COUNTRY, formData);
+          const response = await api.post(API_URL.COUNTRIES.POST_COUNTRY, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
           setCountries([...countries, response.data]);
         }
       } else if (modalType === 'university') {
         if (editingItem) {
-          const response = await api.patch(API_URL.UNIVERSITIES.PATCH_UNIVERSITY(editingItem.id), formData);
+          const response = await api.patch(API_URL.UNIVERSITIES.PATCH_UNIVERSITY(editingItem.id), formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
           setUniversities(universities.map(u => u.id === editingItem.id ? response.data : u));
         } else {
-          const response = await api.post(API_URL.UNIVERSITIES.POST_UNIVERSITY, formData);
+          const response = await api.post(API_URL.UNIVERSITIES.POST_UNIVERSITY, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
           setUniversities([...universities, response.data]);
         }
       } else if (modalType === 'reason') {
         if (editingItem) {
-          const response = await api.patch(API_URL.WHY_CHOOSE_REASONS.PATCH_WHY_CHOOSE_REASON(editingItem.id), formData);
+          const response = await api.patch(API_URL.WHY_CHOOSE_REASONS.PATCH_WHY_CHOOSE_REASON(editingItem.id), formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
           setWhyChooseReasons(whyChooseReasons.map(r => r.id === editingItem.id ? response.data : r));
         } else {
-          const response = await api.post(API_URL.WHY_CHOOSE_REASONS.POST_WHY_CHOOSE_REASON, formData);
+          const response = await api.post(API_URL.WHY_CHOOSE_REASONS.POST_WHY_CHOOSE_REASON, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
           setWhyChooseReasons([...whyChooseReasons, response.data]);
         }
       }
       
       closeModal();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'An error occurred while saving the data');
+    } catch (err) {
+      console.log(err);
+      // setError(err.response?.data?.message || 'An error occurred while saving the data');
     } finally {
       setIsLoading(false);
     }
@@ -266,7 +304,7 @@ const StudyAbroadCMS = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6">
-        <h1 className="text-3xl font-bold mb-2">Content Management</h1>
+        <h1 className="text-3xl font-bold mb-2">Study Abroad</h1>
         <p className="text-purple-100">Manage your study abroad content</p>
       </div>
 
@@ -492,20 +530,18 @@ const StudyAbroadCMS = () => {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
                       <input
-                        type="url"
-                        value={formData.image}
-                        onChange={(e) => setFormData({...formData, image: e.target.value})}
+                        type="file"
+                        onChange={(e) => setFormData({...formData, image: e.target.files?.[0] ?? ''})}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Icon URL</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Icon</label>
                       <input
-                        type="url"
-                        value={formData.icon}
-                        onChange={(e) => setFormData({...formData, icon: e.target.value})}
+                        type="file"
+                        onChange={(e) => setFormData({...formData, icon: e.target.files?.[0] ?? ''})}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       />
                     </div>
@@ -540,9 +576,8 @@ const StudyAbroadCMS = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
                     <input
-                      type="url"
-                      value={formData.logo}
-                      onChange={(e) => setFormData({...formData, logo: e.target.value})}
+                      type="file"
+                      onChange={(e) => setFormData({...formData, logo: e.target.files?.[0] ?? ''})}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
@@ -550,14 +585,14 @@ const StudyAbroadCMS = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
                     <select
-                      value={formData.country}
+                      value={formData.country?.toString()}
                       onChange={(e) => setFormData({...formData, country: e.target.value})}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       required
                     >
                       <option value="">Select a country</option>
                       {countries.map(country => (
-                        <option key={country.id} value={country.id}>{country.subtitle}</option>
+                        <option key={country.id} value={country.id.toString()}>{country.subtitle}</option>
                       ))}
                     </select>
                   </div>
@@ -591,9 +626,8 @@ const StudyAbroadCMS = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Icon URL</label>
                     <input
-                      type="url"
-                      value={formData.icon}
-                      onChange={(e) => setFormData({...formData, icon: e.target.value})}
+                      type="file"
+                      onChange={(e) => setFormData({...formData, icon: e.target.files?.[0] ?? ''})}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                   </div>
@@ -601,14 +635,14 @@ const StudyAbroadCMS = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
                     <select
-                      value={formData.country}
+                      value={formData.country?.toString()}
                       onChange={(e) => setFormData({...formData, country: e.target.value})}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       required
                     >
                       <option value="">Select a country</option>
                       {countries.map(country => (
-                        <option key={country.id} value={country.id}>{country.subtitle}</option>
+                        <option key={country.id} value={country.id.toString()}>{country.subtitle}</option>
                       ))}
                     </select>
                   </div>

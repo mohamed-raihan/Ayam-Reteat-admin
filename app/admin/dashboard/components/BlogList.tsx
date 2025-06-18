@@ -2,33 +2,52 @@
 import React, { useEffect, useState } from 'react';
 import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
+import { toast } from 'react-toastify';
 
-const BlogList = () => {
-  const [blogs, setBlogs] = useState<any[]>([]);
+export interface Blog {
+  id: number;
+  title: string;
+  author: string;
+  date: string;
+  blog_image: string;
+  blog_category: number | string;
+  blog_category_title?: string;
+  blog_heading: number | string;
+  blog_heading_title?: string;
+  is_active?: boolean;
+  // Add other fields as needed
+}
+
+const BlogList = ({ fetchBlogs }: { fetchBlogs: () => void }) => {
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchBlogs = async () => {
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
         const res = await api.get(API_URL.BLOGS.GET_BLOGS);
+        console.log(res);
+        
         setBlogs(res.data);
+        fetchBlogs();
       } catch (err) {
         setError('Failed to fetch blogs.');
+        toast.error('Failed to fetch blogs.');
       } finally {
         setLoading(false);
       }
     };
-    fetchBlogs();
+    fetchData();
   }, []);
 
   return (
     <div className="grid gap-4">
       {loading && <div>Loading...</div>}
       {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
-      {blogs.map((blog) => (
+      {blogs.length > 0 ? blogs.map((blog) => (
         <div key={blog.id} className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
           <img
             src={blog.blog_image || '/placeholder.png'}
@@ -60,7 +79,7 @@ const BlogList = () => {
             </button>
           </div>
         </div>
-      ))}
+      )) : <div className="text-center text-gray-500">No blogs found</div>}
     </div>
   );
 };

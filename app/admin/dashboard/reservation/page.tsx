@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
+import { toast } from "react-toastify";
+import { Trash2 } from "lucide-react";
 
 // type User = {
 //   name: string;
@@ -41,6 +43,17 @@ const Referral = () => {
       console.error(error);
     }
   };    
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await api.delete(API_URL.CONTACT.DELETE_CONTACT(id.toString()));
+      console.log(response);
+      toast.success("Contact deleted successfully");
+      fetchReservation();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   // const filteredReferrals = referral.filter((referral) =>
   //   referral.name.toLowerCase().includes(search.toLowerCase())
   // );
@@ -54,7 +67,7 @@ const Referral = () => {
   return (
     <div className="p-6 bg-white rounded-xl  shadow-md">
       <div className="flex justify-between items-center bg-violet-500 mb-4 rounded-xl py-6 px-4">
-        <h2 className="text-xl font-bold text-white ">Reservation</h2>
+        <h2 className="text-xl font-bold text-white ">Contact Us</h2>
         <input
           type="text"
           placeholder="Search users"
@@ -65,9 +78,9 @@ const Referral = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full text-sm    ">
+        <table className="min-w-full text-sm">
           <thead>
-            <tr className="border-b text-gray-500 uppercase text-xs">
+            <tr className="border-b text-gray-500 uppercase text-left text-xs">
               <th className="py-3 px-2">ID</th>
               <th className="py-3 px-2">Name</th>
               <th className="py-3 px-2">Email</th>
@@ -107,17 +120,16 @@ const Referral = () => {
                           )} */}
                     </span>
                   </td>
-                  <td className="py-3 px-2 text-gray-700">{reservation.id}</td>
-                  <td className="py-3 px-2 text-gray-700">{reservation.name}</td>
+                  {/* <td className="py-3 px-2 text-gray-700">{reservation.id}</td> */}
+                  {/* <td className="py-3 px-2 text-gray-700">{reservation.name}</td> */}
                   <td className="py-3 px-2 text-gray-700">{reservation.email}</td>
                   <td className="py-3 px-2 text-gray-700">{reservation.phone_number}</td>
                   <td className="py-3 px-2 text-gray-700">{reservation.find_us}</td>
                   <td className="py-3 px-2 text-gray-700">
                     <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                      onClick={() => setSelectedReservation(reservation)}
-                    >
-                      View
+                      className="text-red-500 px-4 py-2 rounded-md"
+                      onClick={() => handleDelete(reservation.id)}>
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </td>
                 </tr>

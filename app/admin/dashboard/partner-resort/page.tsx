@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { Plus, Search, Video, Star, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus, Search, Video, Star, Edit, Trash2 } from 'lucide-react';
 import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
 import Image from 'next/image';

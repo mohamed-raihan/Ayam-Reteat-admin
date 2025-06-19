@@ -28,11 +28,11 @@ interface Blog {
   updated_at?: string;
 }
 
-interface Category {
-  id: number;
-  name: string;
-  description?: string;
-}
+// interface Category {
+//   id: number;
+//   name: string;
+//   description?: string;
+// }
 
 interface Heading {
   id: number;

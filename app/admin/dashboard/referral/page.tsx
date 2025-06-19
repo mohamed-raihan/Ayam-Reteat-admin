@@ -114,7 +114,7 @@ export default function ReferralServicePage() {
       bodyForm.append('alt_img_description', form.alt_img_description || '');
       bodyForm.append('slug', form.slug || '');
       bodyForm.append('service_header', String(headerId));
-      if (form.image && (form.image as any) instanceof File) {
+      if (form.image && (form.image as unknown) instanceof File) {
         bodyForm.append('image', form.image);
       }
       const bodyRes = editId

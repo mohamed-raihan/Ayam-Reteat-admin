@@ -305,11 +305,11 @@ const StudyAbroadCMS = () => {
   console.log(filteredData);
   
 
-  function hasTitle(item: any): item is { title: string } {
-    return typeof item.title === 'string';
+  function hasTitle(item: StudyAbroadItem): item is Country | University | WhyChooseReason {
+    return typeof (item as any).title === 'string';
   }
-  function hasSubtitle(item: any): item is { subtitle: string } {
-    return typeof item.subtitle === 'string';
+  function hasSubtitle(item: StudyAbroadItem): item is Country {
+    return (item as Country).subtitle !== undefined;
   }
 
   function getAltText(item: StudyAbroadItem): string {
@@ -419,11 +419,11 @@ const StudyAbroadCMS = () => {
                     <div className="flex items-center space-x-2 mb-2">
                       <h3 className="text-lg font-semibold text-gray-900">
                         {hasSubtitle(item) && hasTitle(item)
-                          ? `${item.title} ${item.subtitle}`
+                          ? `${item.title} ${(item as Country).subtitle}`
                           : hasTitle(item)
                           ? item.title
                           : hasSubtitle(item)
-                          ? item.subtitle
+                          ? (item as Country).subtitle
                           : ''}
                       </h3>
                       {'status' in item && (

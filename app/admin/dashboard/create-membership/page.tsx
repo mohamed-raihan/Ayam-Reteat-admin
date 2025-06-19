@@ -44,6 +44,7 @@ interface FormDataType {
 }
 
 type EditingItem = Country | University | WhyChooseReason | null;
+type StudyAbroadItem = Country | University | WhyChooseReason;
 
 const StudyAbroadCMS = () => {
   const [activeTab, setActiveTab] = useState('countries');
@@ -301,6 +302,22 @@ const StudyAbroadCMS = () => {
     }
   };
 
+  console.log(filteredData);
+  
+
+  function hasTitle(item: any): item is { title: string } {
+    return typeof item.title === 'string';
+  }
+  function hasSubtitle(item: any): item is { subtitle: string } {
+    return typeof item.subtitle === 'string';
+  }
+
+  function getAltText(item: StudyAbroadItem): string {
+    if (hasSubtitle(item)) return item.subtitle;
+    if (hasTitle(item)) return item.title;
+    return '';
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -381,39 +398,35 @@ const StudyAbroadCMS = () => {
 
         {/* Content Grid */}
         <div className="space-y-4">
-          {filteredData().map((item: any) => (
+          {filteredData().map((item: StudyAbroadItem) => (
             <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4 flex-1">
                   {/* Image/Icon */}
                   <div className="flex space-x-2">
-                    {(item.image || item.logo || item.icon) && (
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                        {activeTab === 'countries' && item.image ? (
-                          <img src={item.image} alt={item.subtitle} className="w-full h-full object-cover" />
-                        ) : activeTab === 'universities' && item.logo ? (
-                          <img src={item.logo} alt={item.title} className="w-full h-full object-cover" />
-                        ) : item.icon ? (
-                          <img src={item.icon} alt={item.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <Image className="w-6 h-6 text-gray-400" />
-                        )}
-                      </div>
+                    {'image' in item && item.image && (
+                      <img src={item.image} alt={getAltText(item)} className="w-16 h-16 object-cover rounded-lg" />
                     )}
-                    {activeTab === 'countries' && item.icon && (
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                        <img src={item.icon} alt={`${item.subtitle} icon`} className="w-full h-full object-cover" />
-                      </div>
+                    {'logo' in item && item.logo && (
+                      <img src={item.logo} alt={getAltText(item)} className="w-16 h-16 object-cover rounded-lg" />
+                    )}
+                    {'icon' in item && item.icon && (
+                      <img src={item.icon} alt={getAltText(item)} className="w-16 h-16 object-cover rounded-lg" />
                     )}
                   </div>
-
                   {/* Content */}
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {activeTab === 'countries' ? `${item.title} ${item.subtitle}` : item.title}
+                        {hasSubtitle(item) && hasTitle(item)
+                          ? `${item.title} ${item.subtitle}`
+                          : hasTitle(item)
+                          ? item.title
+                          : hasSubtitle(item)
+                          ? item.subtitle
+                          : ''}
                       </h3>
-                      {activeTab === 'countries' && (
+                      {'status' in item && (
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                           item.status === 'Published' 
                             ? 'bg-green-100 text-green-800' 
@@ -422,33 +435,33 @@ const StudyAbroadCMS = () => {
                           {item.status}
                         </span>
                       )}
-                      {(activeTab === 'universities' || activeTab === 'reasons') && (
+                      {'country' in item && (activeTab === 'universities' || activeTab === 'reasons') && (
                         <span className="flex items-center space-x-1 text-sm text-gray-500">
                           <MapPin className="w-3 h-3" />
                           <span>{getCountryName(item.country)}</span>
                         </span>
                       )}
                     </div>
-                    
                     <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-                      {item.description}
+                      {'description' in item ? item.description : ''}
                     </p>
-                    
-                    {activeTab === 'countries' && (
+                    {'slug' in item && (
                       <div className="text-xs text-gray-500">
                         Slug: {item.slug} • ID: {item.id}
                       </div>
                     )}
                   </div>
                 </div>
-
                 {/* Actions */}
                 <div className="flex items-center space-x-2">
                   <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
                     <Eye className="w-4 h-4" />
                   </button>
                   <button 
-                    onClick={() => openModal(activeTab.slice(0, -1) === 'countrie' ? 'country' : activeTab.slice(0, -1) === 'universitie' ? 'university' : 'reason', item)}
+                    onClick={() => openModal(
+                      activeTab.slice(0, -1) === 'countrie' ? 'country' : activeTab.slice(0, -1) === 'universitie' ? 'university' : 'reason',
+                      item as any
+                    )}
                     className="p-2 text-gray-400 hover:text-purple-600 transition-colors"
                   >
                     <Edit className="w-4 h-4" />

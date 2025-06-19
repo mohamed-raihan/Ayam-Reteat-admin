@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { Search, Plus, Eye, Edit, Trash2, Globe, GraduationCap, Star, Image, MapPin } from 'lucide-react';
+import { Search, Plus, Eye, Edit, Trash2, Globe, GraduationCap, Star, MapPin } from 'lucide-react';
 import { API_URL } from '@/app/services/api_url';
 import api from '@/app/services/api';
 
@@ -129,11 +129,20 @@ const StudyAbroadCMS = () => {
     logo: ''
   });
 
-  const openModal = (type: string, item = null) => {
+  const openModal = (type: string, item: EditingItem = null) => {
     setModalType(type);
     setEditingItem(item);
     if (item) {
-      setFormData(item);
+      setFormData({
+        title: 'title' in item ? item.title : '',
+        subtitle: 'subtitle' in item ? item.subtitle : '',
+        description: 'description' in item ? item.description : '',
+        image: 'image' in item ? item.image : '',
+        icon: 'icon' in item ? item.icon : '',
+        slug: 'slug' in item ? item.slug : '',
+        country: 'country' in item ? item.country : '',
+        logo: 'logo' in item ? item.logo : ''
+      });
     } else {
       setFormData({
         title: type === 'country' ? 'Study in' : '',
@@ -306,7 +315,7 @@ const StudyAbroadCMS = () => {
   
 
   function hasTitle(item: StudyAbroadItem): item is Country | University | WhyChooseReason {
-    return typeof (item as any).title === 'string';
+    return 'title' in item && typeof item.title === 'string';
   }
   function hasSubtitle(item: StudyAbroadItem): item is Country {
     return (item as Country).subtitle !== undefined;
@@ -460,7 +469,7 @@ const StudyAbroadCMS = () => {
                   <button 
                     onClick={() => openModal(
                       activeTab.slice(0, -1) === 'countrie' ? 'country' : activeTab.slice(0, -1) === 'universitie' ? 'university' : 'reason',
-                      item as any
+                      item as EditingItem
                     )}
                     className="p-2 text-gray-400 hover:text-purple-600 transition-colors"
                   >

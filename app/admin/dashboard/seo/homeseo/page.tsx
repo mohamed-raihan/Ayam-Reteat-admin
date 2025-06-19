@@ -14,7 +14,7 @@ interface SeoData {
 }
 
 export default function HomeSeo() {
-  const [seoData, setSeoData] = useState<SeoData | undefined>(undefined);
+  const [seoData, setSeoData] = useState<SeoData[] | undefined>(undefined);
   const [modalOpen, setModalOpen] = useState(false);
 
   const fetchSeo = async () => {
@@ -46,7 +46,7 @@ export default function HomeSeo() {
 
       {modalOpen && (
         <SeoModal
-          initialData={seoData}
+          initialData={seoData?.[0]}
           onClose={() => setModalOpen(false)}
           onSuccess={fetchSeo}
         />

@@ -3,14 +3,7 @@ import { FaBell } from "react-icons/fa";
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between px-8 py-4 bg-white border-b border-gray-200">
-      <div className="flex-1">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full max-w-md px-4 py-2 text-black rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-        />
-      </div>
+    <header className="flex items-center justify-end px-8 py-4 bg-white border-b border-gray-200">
       <div className="flex items-center gap-6">
         <button className="relative p-2 rounded-full hover:bg-gray-100">
           <FaBell className="text-xl text-gray-500" />

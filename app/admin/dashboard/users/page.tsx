@@ -127,6 +127,13 @@ const ContentManager = () => {
     ));
   };
 
+  // Filtered lists based on search
+  const filteredVideos = videos.filter(video =>
+    video.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const filteredReviews = reviews.filter(review =>
+    review.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     fetchSuccessVideos();
@@ -166,7 +173,7 @@ const ContentManager = () => {
       }
 
       console.log('inside submit');
-      
+
       setShowAddModal(false);
       fetchSuccessVideos();
       resetVideoForm();
@@ -263,17 +270,13 @@ const ContentManager = () => {
     }
   };
 
- 
-
-
-
   const handleEditVideo = (video: SuccessVideos) => {
     setEditingId(video.id);
     setVideoForm({
       id: video.id,
       name: video.name,
-      video: null,
-      thumbnail: null,
+      video: video.video,
+      thumbnail: video.thumbnail,
       order: video.order,
       is_active: video.is_active,
     });
@@ -322,215 +325,6 @@ const ContentManager = () => {
     setEditingId(null);
   };
 
-  // const AddVideoModal = () => (
-  //   <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
-  //     <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-  //       <h3 className="text-lg font-semibold mb-4">{editingId ? 'Edit Video' : 'Add New Video'}</h3>
-  //       {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
-  //       {success && <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">{success}</div>}
-  //       <form onSubmit={handleVideoSubmit} className="space-y-4">
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Video Title</label>
-  //           <input
-  //             type="text"
-  //             value={videoForm.name}
-  //             onChange={(e) => {
-  //               console.log('Typing:', e.target.value);
-  //               setVideoForm(prev => ({ ...prev, name: e.target.value }));
-  //             }}
-  //             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-  //             placeholder="Enter video title"
-  //             required
-  //           />
-  //         </div>
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Video File</label>
-  //           <div className="flex items-center space-x-2">
-  //             <input
-  //               type="file"
-  //               accept="video/*"
-  //               onChange={handleVideoInputChange}
-  //               className="hidden"
-  //               id="video-upload"
-  //               required={!editingId}
-  //             />
-  //             <label
-  //               htmlFor="video-upload"
-  //               className="flex-1 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
-  //             >
-  //               {videoFileName || 'Choose video file'}
-  //             </label>
-  //           </div>
-  //         </div>
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Thumbnail</label>
-  //           <div className="flex items-center space-x-2">
-  //             <input
-  //               type="file"
-  //               accept="image/*"
-  //               onChange={handleVideoInputChange}
-  //               className="hidden"
-  //               id="thumbnail-upload"
-  //               required={!editingId}
-  //             />
-  //             <label
-  //               htmlFor="thumbnail-upload"
-  //               className="flex-1 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
-  //             >
-  //               {thumbnailFileName || 'Choose thumbnail file'}
-  //             </label>
-  //           </div>
-  //         </div>
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
-  //           <input
-  //             type="number"
-  //             value={videoForm.order}
-  //             onChange={(e) => setVideoForm(prev => ({ ...prev, order: parseInt(e.target.value) }))}
-  //             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-  //             required
-  //           />
-  //         </div>
-  //         <div className="flex items-center">
-  //           <input
-  //             type="checkbox"
-  //             checked={videoForm.is_active}
-  //             onChange={(e) => setVideoForm(prev => ({ ...prev, is_active: e.target.checked }))}
-  //             className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-  //           />
-  //           <label className="ml-2 block text-sm text-gray-900">Active</label>
-  //         </div>
-  //         <div className="flex justify-end space-x-3 mt-6">
-  //           <button
-  //             type="button"
-  //             onClick={() => {
-  //               setShowAddModal(false);
-  //               resetVideoForm();
-  //             }}
-  //             className="px-4 py-2 text-gray-600 hover:text-gray-800"
-  //             disabled={isLoading}
-  //           >
-  //             Cancel
-  //           </button>
-  //           <button
-  //             type="submit"
-  //             className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
-  //             disabled={isLoading}
-  //           >
-  //             {isLoading ? 'Saving...' : editingId ? 'Update Video' : 'Add Video'}
-  //           </button>
-  //         </div>
-  //       </form>
-  //     </div>
-  //   </div>
-  // );
-
-  // const AddReviewModal = () => (
-  //   <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm bg-black/50 flex items-center justify-center z-50">
-  //     <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-  //       <h3 className="text-lg font-semibold mb-4">{editingId ? 'Edit Review' : 'Add New Review'}</h3>
-  //       {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
-  //       {success && <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">{success}</div>}
-  //       <form onSubmit={handleReviewSubmit} className="space-y-4">
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
-  //           <input
-  //             type="text"
-  //             value={reviewForm.name}
-  //             onChange={(e) => setReviewForm(prev => ({ ...prev, name: e.target.value }))}
-  //             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-  //             placeholder="Enter customer name"
-  //             required
-  //           />
-  //         </div>
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Designation</label>
-  //           <input
-  //             type="text"
-  //             value={reviewForm.designation}
-  //             onChange={(e) => setReviewForm(prev => ({ ...prev, designation: e.target.value }))}
-  //             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-  //             placeholder="Enter designation"
-  //             required
-  //           />
-  //         </div>
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-  //           <input
-  //             type="text"
-  //             value={reviewForm.company}
-  //             onChange={(e) => setReviewForm(prev => ({ ...prev, company: e.target.value }))}
-  //             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-  //             placeholder="Enter company name"
-  //             required
-  //           />
-  //         </div>
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-  //           <input
-  //             type="text"
-  //             value={reviewForm.country}
-  //             onChange={(e) => setReviewForm(prev => ({ ...prev, country: e.target.value }))}
-  //             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-  //             placeholder="Enter country"
-  //             required
-  //           />
-  //         </div>
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Review Content</label>
-  //           <textarea
-  //             value={reviewForm.review}
-  //             onChange={(e) => setReviewForm(prev => ({ ...prev, review: e.target.value }))}
-  //             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-  //             rows={4}
-  //             placeholder="Enter review content"
-  //             required
-  //           ></textarea>
-  //         </div>
-  //         <div>
-  //           <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image</label>
-  //           <div className="flex items-center space-x-2">
-  //             <input
-  //               type="file"
-  //               accept="image/*"
-  //               onChange={handleReviewInputChange}
-  //               className="hidden"
-  //               id="profile-image-upload"
-  //               required={!editingId}
-  //             />
-  //             <label
-  //               htmlFor="profile-image-upload"
-  //               className="flex-1 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
-  //             >
-  //               {profileImageFileName || 'Choose profile image'}
-  //             </label>
-  //           </div>
-  //         </div>
-  //         <div className="flex justify-end space-x-3 mt-6">
-  //           <button
-  //             type="button"
-  //             onClick={() => {
-  //               setShowAddModal(false);
-  //               resetReviewForm();
-  //             }}
-  //             className="px-4 py-2 text-gray-600 hover:text-gray-800"
-  //             disabled={isLoading}
-  //           >
-  //             Cancel
-  //           </button>
-  //           <button
-  //             type="submit"
-  //             className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
-  //             disabled={isLoading}
-  //           >
-  //             {isLoading ? 'Saving...' : editingId ? 'Update Review' : 'Add Review'}
-  //           </button>
-  //         </div>
-  //       </form>
-  //     </div>
-  //   </div>
-  // );
-
   console.log(reviewForm);
   console.log(videoForm);
   return (
@@ -548,8 +342,8 @@ const ContentManager = () => {
             <button
               onClick={() => setActiveTab('videos')}
               className={`flex items-center px-6 py-4 font-medium transition-colors ${activeTab === 'videos'
-                  ? 'text-purple-600 border-b-2 border-purple-600 bg-purple-50'
-                  : 'text-gray-600 hover:text-purple-600'
+                ? 'text-purple-600 border-b-2 border-purple-600 bg-purple-50'
+                : 'text-gray-600 hover:text-purple-600'
                 }`}
             >
               <Video className="w-5 h-5 mr-2" />
@@ -558,8 +352,8 @@ const ContentManager = () => {
             <button
               onClick={() => setActiveTab('reviews')}
               className={`flex items-center px-6 py-4 font-medium transition-colors ${activeTab === 'reviews'
-                  ? 'text-purple-600 border-b-2 border-purple-600 bg-purple-50'
-                  : 'text-gray-600 hover:text-purple-600'
+                ? 'text-purple-600 border-b-2 border-purple-600 bg-purple-50'
+                : 'text-gray-600 hover:text-purple-600'
                 }`}
             >
               <Star className="w-5 h-5 mr-2" />
@@ -598,7 +392,7 @@ const ContentManager = () => {
               {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
               {/* {success && <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">{success}</div>}   */}
               <div className="grid gap-4">
-                {videos.map((video) => (
+                {filteredVideos.map((video) => (
                   <div key={video.id} className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                     <Image
                       src={video.thumbnail instanceof File ? URL.createObjectURL(video.thumbnail) : video.thumbnail || '/placeholder-video.png'}
@@ -616,8 +410,8 @@ const ContentManager = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${video.is_active === true
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-yellow-100 text-yellow-800'
                         }`}>
                         {video.is_active ? 'Active' : 'Inactive'}
                       </span>
@@ -645,7 +439,7 @@ const ContentManager = () => {
               {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
               {/* {success && <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">{success}</div>} */}
               <div className="grid gap-4">
-                {reviews?.map((review) => (
+                {filteredReviews?.map((review) => (
                   <div key={review.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -720,16 +514,24 @@ const ContentManager = () => {
                       const file = e.target.files?.[0] || null;
                       setVideoForm(prev => ({ ...prev, video: file }));
                     }}
-                    className="hidden"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     id="video-upload"
                     required={!editingId}
                   />
-                  <label
-                    htmlFor="video-upload"
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
-                  >
-                    {videoFileName || 'Choose video file'}
-                  </label>
+                  {videoForm.video && (
+                    <video width={50} controls preload="none">
+                      <source
+                        src={
+                          videoForm.video instanceof File
+                            ? URL.createObjectURL(videoForm.video)
+                            : (videoForm.video as string)
+                        }
+                        type="video/mp4"
+                      />
+
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
                 </div>
               </div>
               <div>
@@ -740,18 +542,25 @@ const ContentManager = () => {
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files?.[0] || null;
-                      setVideoForm(prev => ({...prev, thumbnail: file}))
+                      setVideoForm(prev => ({ ...prev, thumbnail: file }))
                     }}
-                    className="hidden"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     id="thumbnail-upload"
                     required={!editingId}
                   />
-                  <label
-                    htmlFor="thumbnail-upload"
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
-                  >
-                    {thumbnailFileName || 'Choose thumbnail file'}
-                  </label>
+                  {videoForm.thumbnail && (
+                    <Image
+                      src={
+                        videoForm.thumbnail instanceof File
+                          ? URL.createObjectURL(videoForm.thumbnail)
+                          : (videoForm.thumbnail as string)
+                      }
+                      alt="Thumbnail Preview"
+                      className='border rounded-lg border'
+                      width={50}
+                      height={50}
+                    />
+                  )}
                 </div>
               </div>
               <div>

@@ -117,7 +117,7 @@ export default function SeoModal({ initialData, onClose, onSuccess }: SeoModalPr
         {/* Header */}
         {/* Header */}
         <div className="px-8 pt-8 pb-4 relative">
-          <h2 className="text-2xl font-bold">Edit Home SEO</h2>
+          <h2 className="text-2xl font-bold">Add Home SEO</h2>
           <button
             type="button"
             onClick={onClose}

@@ -127,7 +127,7 @@ export default function SeoModal({ initialData, onClose, onSuccess }: SeoModalPr
             &times;
           </button>
         </div>
-        <div className="border-b border-gray-300" />
+        <div className="border-b border-gray-300"/>
         {/* Form */}
         <form className="px-8 py-6 space-y-8" onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
           {/* Basic SEO Fields */}

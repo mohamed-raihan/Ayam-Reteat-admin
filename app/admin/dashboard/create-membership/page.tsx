@@ -1,8 +1,9 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { Search, Plus, Eye, Edit, Trash2, Globe, GraduationCap, Star, MapPin } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Globe, GraduationCap, Star, MapPin } from 'lucide-react';
 import { API_URL } from '@/app/services/api_url';
 import api from '@/app/services/api';
+import { toast } from 'react-toastify';
 
 interface Country {
   id: number;
@@ -210,6 +211,7 @@ const StudyAbroadCMS = () => {
             }
           });
           setCountries(countries.map(c => c.id === editingItem.id ? response.data : c));
+          toast.success("Country updated successfully")
         } else {
           const response = await api.post(API_URL.COUNTRIES.POST_COUNTRY, formData, {
             headers: {
@@ -217,6 +219,7 @@ const StudyAbroadCMS = () => {
             }
           });
           setCountries([...countries, response.data]);
+          toast.success("Country added successfully")
         }
       } else if (modalType === 'university') {
         if (editingItem) {
@@ -226,6 +229,7 @@ const StudyAbroadCMS = () => {
             }
           });
           setUniversities(universities.map(u => u.id === editingItem.id ? response.data : u));
+          toast.success("University updated successfully")
         } else {
           const response = await api.post(API_URL.UNIVERSITIES.POST_UNIVERSITY, formData, {
             headers: {
@@ -233,6 +237,7 @@ const StudyAbroadCMS = () => {
             }
           });
           setUniversities([...universities, response.data]);
+          toast.success("University added successfully")
         }
       } else if (modalType === 'reason') {
         if (editingItem) {
@@ -242,6 +247,7 @@ const StudyAbroadCMS = () => {
             }
           });
           setWhyChooseReasons(whyChooseReasons.map(r => r.id === editingItem.id ? response.data : r));
+          toast.success("Why choose updated successfully")
         } else {
           const response = await api.post(API_URL.WHY_CHOOSE_REASONS.POST_WHY_CHOOSE_REASON, formData, {
             headers: {
@@ -249,6 +255,7 @@ const StudyAbroadCMS = () => {
             }
           });
           setWhyChooseReasons([...whyChooseReasons, response.data]);
+          toast.success("Why choose added successfully")
         }
       }
       
@@ -463,9 +470,9 @@ const StudyAbroadCMS = () => {
                 </div>
                 {/* Actions */}
                 <div className="flex items-center space-x-2">
-                  <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                  {/* <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
                     <Eye className="w-4 h-4" />
-                  </button>
+                  </button> */}
                   <button 
                     onClick={() => openModal(
                       activeTab.slice(0, -1) === 'countrie' ? 'country' : activeTab.slice(0, -1) === 'universitie' ? 'university' : 'reason',

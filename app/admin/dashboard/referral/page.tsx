@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '@/app/services/api_url';
 import api from '@/app/services/api';
+import Image from 'next/image';
 
 interface ServiceHeader {
   id: number;
@@ -12,7 +13,7 @@ interface ServiceHeader {
 interface ServiceBody {
   id: number;
   title: string;
-  image: string;
+  image: string | File;
   description: string;
   alt_img_text: string | null;
   alt_img_title: string | null;
@@ -180,33 +181,61 @@ export default function ReferralServicePage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {services.map((service) => (
-              <div key={service.id} className="bg-gray-50 rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-                <div className="w-full h-40 bg-gray-200 rounded mb-4 flex items-center justify-center overflow-hidden">
+              <div
+                key={service.id}
+                className="bg-gradient-to-br from-white via-violet-50 to-purple-100 border border-gray-200 rounded-2xl shadow-lg hover:scale-105 hover:shadow-xl transition-transform duration-200 p-0 flex flex-col overflow-hidden"
+              >
+                <div className="w-full h-40 bg-gray-200 rounded-t-2xl mb-0 flex items-center justify-center overflow-hidden relative">
                   {service.image ? (
-                    <img src={service.image} alt="service" className="object-cover w-full h-full" />
+                    <img
+                      src={service.image}
+                      alt={service.alt_img_text || 'service'}
+                      className="object-cover w-full h-full rounded-t-2xl"
+                    />
                   ) : (
                     <span className="text-gray-400">No Image</span>
                   )}
+                  {/* Optional: Overlay gradient for modern look */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none rounded-t-2xl" />
                 </div>
-                <div className="flex-1">
-                  {/* ServiceBody does not have a title property; display placeholder or form.title if available */}
-                  <h3 className="text-lg font-bold text-purple-700 mb-2">{service.title || 'No Title'}</h3>
-                  <p className="text-gray-700 text-sm mb-2 line-clamp-3">{service.description}</p>
-                  <div className="text-xs text-gray-500 mb-4">Slug: {service.slug}</div>
-                </div>
-                <div className="flex gap-2 mt-auto">
-                  <button
-                    className="flex-1 bg-violet-500 text-white py-1 rounded hover:bg-blue-700 transition text-sm"
-                    onClick={() => openModal(service)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="flex-1 bg-red-600 text-white py-1 rounded hover:bg-red-700 transition text-sm"
-                    onClick={() => handleDelete(service.id, service.service_header)}
-                  >
-                    Delete
-                  </button>
+                <div className="flex-1 flex flex-col px-5 py-4 gap-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="inline-block bg-violet-100 text-violet-700 text-xs font-semibold px-3 py-1 rounded-full">
+                      {service.title || 'No Title'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600 text-sm mb-1">
+                    <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 17l4 4 4-4m0-5V3" /></svg>
+                    <span className="line-clamp-2">{service.description}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 01-8 0" /></svg>
+                    <span>Slug: <span className="font-medium text-gray-700">{service.slug}</span></span>
+                  </div>
+                  <div className="flex flex-wrap gap-1 text-xs text-gray-400">
+                    {service.alt_img_title && <span className="bg-gray-100 px-2 py-0.5 rounded">{service.alt_img_title}</span>}
+                    {service.alt_img_caption && <span className="bg-gray-100 px-2 py-0.5 rounded">{service.alt_img_caption}</span>}
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      className="flex-1 bg-violet-500 text-white py-2 rounded-full hover:bg-violet-700 transition text-sm font-semibold shadow"
+                      onClick={() => openModal(service)}
+                    >
+                      <span className="inline-flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 11l6 6M3 21h6v-6l9.293-9.293a1 1 0 00-1.414-1.414L9 13.586V21z" /></svg>
+                        Edit
+                      </span>
+                    </button>
+                    <button
+                      className="flex-1 bg-red-500 text-white py-2 rounded-full hover:bg-red-700 transition text-sm font-semibold shadow"
+                      onClick={() => handleDelete(service.id, service.service_header)}
+                    >
+                      <span className="inline-flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        Delete
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -238,6 +267,7 @@ export default function ReferralServicePage() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Image</label>
+                <div>
                 <input
                   type="file"
                   name="image"
@@ -245,6 +275,20 @@ export default function ReferralServicePage() {
                   onChange={handleInputChange}
                   className="w-full border rounded px-3 py-2"
                 />
+                {form.image && (
+                    <Image
+                      src={
+                        form.image instanceof File
+                          ? URL.createObjectURL(form.image)
+                          : (form.image as string)
+                      }
+                      alt="Thumbnail Preview"
+                      className='border rounded-lg border'
+                      width={50}
+                      height={50}
+                    />
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Description</label>

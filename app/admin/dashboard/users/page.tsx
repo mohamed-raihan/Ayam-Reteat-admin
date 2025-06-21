@@ -57,8 +57,8 @@ const ContentManager = () => {
   const [videoFileName, setVideoFileName] = useState('');
   const [thumbnailFileName, setThumbnailFileName] = useState('');
   const [profileImageFileName, setProfileImageFileName] = useState('');
-
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   // Sample data
   const [videos, setVideos] = useState<SuccessVideos[]>([
@@ -79,7 +79,6 @@ const ContentManager = () => {
       video: "/placeholder-video.mp4"
     }
   ]);
-
   const [reviews, setReviews] = useState<Reviews[]>([
     {
       id: 1,
@@ -103,7 +102,8 @@ const ContentManager = () => {
     }
   ]);
 
-  const [showAddModal, setShowAddModal] = useState(false);
+  console.log(videoFileName);
+  console.log(thumbnailFileName);
 
   const fetchSuccessVideos = async () => {
     const response = await api.get(API_URL.HOME.SUCCESS_VIDEOS);

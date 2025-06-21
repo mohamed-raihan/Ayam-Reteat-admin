@@ -55,8 +55,7 @@ const seoSubLinks = [
   { name: "Services SEO", href: "/admin/dashboard/seo/serviceseo" },
   { name: "Blog SEO", href: "/admin/dashboard/seo/blogseo" },
   { name: "Contact SEO", href: "/admin/dashboard/seo/contactseo" },
-  { name: "About SEO", href: "/admin/dashboard/seo/aboutseo" },
-  { name: "Study Abroad SEO", href: "/admin/dashboard/seo/studyabroadseo" },
+  { name: "Study Abroad SEO", href: "/admin/dashboard/seo/countryseo" },
 ];
 
 export default function Sidebar() {

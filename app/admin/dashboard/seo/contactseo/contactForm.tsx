@@ -99,7 +99,7 @@ export default function SeoModal({ initialData, onClose, onSuccess }: SeoModalPr
           }
         }
       });
-      const response = await api.post(API_URL.SEO.SERVICE_SEO, formData, {
+      const response = await api.post(API_URL.SEO.CONTACT_SEO, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log(response);
@@ -115,8 +115,9 @@ export default function SeoModal({ initialData, onClose, onSuccess }: SeoModalPr
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-4xl p-0 max-h-[90vh] overflow-y-auto">
         {/* Header */}
+        {/* Header */}
         <div className="px-8 pt-8 pb-4 relative">
-          <h2 className="text-2xl font-bold">Edit Home SEO</h2>
+          <h2 className="text-2xl font-bold">Add Contact SEO</h2>
           <button
             type="button"
             onClick={onClose}

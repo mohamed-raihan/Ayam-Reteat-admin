@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import api from '@/app/services/api';
 import SeoCard from '../../components/seoCard';
 import { API_URL } from '@/app/services/api_url';
-import SeoModal from './serviceForm';
+import SeoModal from './contactForm';
 
 interface SeoData {
   title?: string;
@@ -18,7 +18,7 @@ export default function HomeSeo() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const fetchSeo = async () => {
-    const res = await api.get(API_URL.SEO.SERVICE_SEO);
+    const res = await api.get(API_URL.SEO.CONTACT_SEO);
     console.log(res);
     
     setSeoData(res.data);
@@ -32,8 +32,8 @@ export default function HomeSeo() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 px-4 rounded-lg py-4">
         <div>
-          <h2 className="text-2xl font-bold text-white">Service SEO</h2>
-          <p className="text-sm text-gray-500 text-white">Manage SEO details for your service page</p>
+          <h2 className="text-2xl font-bold text-white">Contact SEO</h2>
+          <p className="text-sm text-gray-500 text-white">Manage SEO details for your contact page</p>
         </div>
         <button onClick={() => setModalOpen(true)} className='rounded-lg shadow bg-purple-100 py-3 px-4'>+ Add </button>
       </div>

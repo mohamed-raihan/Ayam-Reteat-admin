@@ -568,7 +568,7 @@ const StudyAbroadCMS = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Icon</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Animal Icon</label>
                       <input
                         type="file"
                         onChange={(e) => setFormData({...formData, icon: e.target.files?.[0] ?? ''})}

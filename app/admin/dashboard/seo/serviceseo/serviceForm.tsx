@@ -202,7 +202,7 @@ export default function SeoModal({ initialData, onClose, onSuccess }: SeoModalPr
               <label className="block text-sm font-medium mb-1">OG Description</label>
               <input name="og_description" placeholder="OG Description" value={form.og_description || ''} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mb-2" />
               <label className="block text-sm font-medium mb-1">OG Image</label>
-              <input name="og_image" placeholder="OG Image URL" value={form.og_image || ''} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
+              <input name="og_image" placeholder="OG Image URL" onChange={handleChange} type="file" accept="image/*" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
             </div>
             <div>
               <h3 className="font-medium mb-2">Twitter</h3>
@@ -213,7 +213,7 @@ export default function SeoModal({ initialData, onClose, onSuccess }: SeoModalPr
               <label className="block text-sm font-medium mb-1">Twitter Description</label>
               <input name="twitter_description" placeholder="Twitter Description" value={form.twitter_description || ''} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mb-2" />
               <label className="block text-sm font-medium mb-1">Twitter Image</label>
-              <input name="twitter_image" placeholder="Twitter Image URL" value={form.twitter_image || ''} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
+              <input name="twitter_image" placeholder="Twitter Image URL" onChange={handleChange} type="file" accept="image/*" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
             </div>
           </div>
 

@@ -81,8 +81,13 @@ export default function BlogManagementPage() {
 
   const fetchBlogInners = async () => {
     const response = await api.get(API_URL.BLOG_INNER.GET_BLOG_INNER);
+    console.log(response.data);
+    
     setBlogInners(response.data);
   };
+
+  console.log(blogInners);
+  
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -171,7 +176,7 @@ export default function BlogManagementPage() {
             >
               ×
             </button>
-            {activeTab === "blogs" && <BlogCreateForm fetchCategories={fetchCategories} setShowModal={setShowModal}/>}
+            {activeTab === "blogs" && <BlogCreateForm fetchCategories={fetchBlogs} setShowModal={setShowModal}/>}
             {activeTab === "categories" && <BlogCategoryForm fetchCategories={fetchCategories} setShowModal={setShowModal} />}
             {activeTab === "headings" && <BlogHeadingForm fetchHeadings={fetchHeadings} setShowModal={setShowModal} />}
             {activeTab === "blogs inner" && <BlogInnerForm fetchBlogInners={fetchBlogInners} setShowModal={setShowModal} />}

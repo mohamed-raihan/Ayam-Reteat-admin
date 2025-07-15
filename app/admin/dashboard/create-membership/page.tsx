@@ -201,7 +201,7 @@ const StudyAbroadCMS = () => {
   };
 
   const validateForm = () => {
-    let errors: { [key: string]: string } = {};
+    const errors: { [key: string]: string } = {};
 
     if (modalType === 'country') {
       if (!formData.title) errors.title = 'Title is required';

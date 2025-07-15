@@ -138,6 +138,8 @@ const ContentManager = () => {
       formData.append('order', videoForm.order.toString());
       formData.append('is_active', videoForm.is_active.toString());
 
+      
+
       if (editingId) {
         await api.put(API_URL.HOME.UPDATE_SUCCESS_VIDEO(editingId.toString()), formData);
         setSuccess('Video updated successfully!');
@@ -297,7 +299,6 @@ const ContentManager = () => {
               accept="video/*"
               onChange={(e) => setVideoForm({ ...videoForm, video: e.target.files?.[0] || null })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required={!editingId}
             />
           </div>
           <div>
@@ -307,7 +308,6 @@ const ContentManager = () => {
               accept="image/*"
               onChange={(e) => setVideoForm({ ...videoForm, thumbnail: e.target.files?.[0] || null })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required={!editingId}
             />
           </div>
           <div>

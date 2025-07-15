@@ -55,6 +55,7 @@ const StudyAbroadCMS = () => {
   const [editingItem, setEditingItem] = useState<EditingItem>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
 
   // Sample data
   const [countries, setCountries] = useState<Country[]>([
@@ -146,7 +147,7 @@ const StudyAbroadCMS = () => {
       });
     } else {
       setFormData({
-        title: type === 'country' ? 'Study in' : '',
+        title: '',
         subtitle: '',
         description: '',
         image: '',
@@ -196,14 +197,43 @@ const StudyAbroadCMS = () => {
       country: '',
       logo: ''
     });
+    setValidationErrors({}); // Clear validation errors on close
+  };
+
+  const validateForm = () => {
+    let errors: { [key: string]: string } = {};
+
+    if (modalType === 'country') {
+      if (!formData.title) errors.title = 'Title is required';
+      if (!formData.subtitle) errors.subtitle = 'Subtitle is required';
+      if (!formData.description) errors.description = 'Description is required';
+      if (!formData.image && !editingItem) errors.image = 'Image is required';
+      if (!formData.icon && !editingItem) errors.icon = 'Animal icon is required';
+      if (!formData.slug) errors.slug = 'Slug is required';
+    } else if (modalType === 'university') {
+      if (!formData.title) errors.title = 'University name is required';
+      if (!formData.logo && !editingItem) errors.logo = 'Logo is required';
+      if (!formData.country) errors.country = 'Country is required';
+    } else if (modalType === 'reason') {
+      if (!formData.title) errors.title = 'Title is required';
+      if (!formData.description) errors.description = 'Description is required';
+      if (!formData.icon && !editingItem) errors.icon = 'Icon is required';
+      if (!formData.country) errors.country = 'Country is required';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async () => {
+    if (!validateForm()) return;
     setIsLoading(true);
     setError(null);
     
     try {
       if (modalType === 'country') {
+        console.log(formData);
+        
         if (editingItem) {
           const response = await api.patch(API_URL.COUNTRIES.PATCH_COUNTRY(editingItem.id), formData, {
             headers: {
@@ -262,6 +292,7 @@ const StudyAbroadCMS = () => {
       closeModal();
     } catch (err) {
       console.log(err);
+      toast.error("Error occured")
       // setError(err.response?.data?.message || 'An error occurred while saving the data');
     } finally {
       setIsLoading(false);
@@ -513,7 +544,7 @@ const StudyAbroadCMS = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-90vh overflow-y-auto">
             <div className="p-6 border-b">
               <h2 className="text-xl font-semibold">
@@ -526,24 +557,30 @@ const StudyAbroadCMS = () => {
                 <>
                   <div className="grid grid-cols-2 gap-4 ">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Title (Country)</label>
                       <input
                         type="text"
                         value={formData.title}
                         onChange={(e) => setFormData({...formData, title: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className={`w-full border ${validationErrors.title ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                         required
                       />
+                      {validationErrors.title && (
+                        <p className="text-red-500 text-xs mt-1">{validationErrors.title}</p>
+                      )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle (Country)</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">About</label>
                       <input
                         type="text"
                         value={formData.subtitle}
                         onChange={(e) => setFormData({...formData, subtitle: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className={`w-full border ${validationErrors.subtitle ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                         required
                       />
+                      {validationErrors.subtitle && (
+                        <p className="text-red-500 text-xs mt-1">{validationErrors.subtitle}</p>
+                      )}
                     </div>
                   </div>
                   
@@ -552,28 +589,54 @@ const StudyAbroadCMS = () => {
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
+                      placeholder='Seperate paragraph with "+"'
                       rows={3}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={`w-full border ${validationErrors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                       required
                     />
+                    {validationErrors.description && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.description}</p>
+                    )}
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
-                      <input
-                        type="file"
-                        onChange={(e) => setFormData({...formData, image: e.target.files?.[0] ?? ''})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
+                      <div className="flex items-center space-x-4">
+                        <input
+                          type="file"
+                          onChange={(e) => setFormData({...formData, image: e.target.files?.[0] ?? ''})}
+                          className={`w-full border ${validationErrors.image ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+                        />
+                        {formData.image && typeof formData.image !== 'string' && (
+                          <img src={URL.createObjectURL(formData.image)} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                        )}
+                        {formData.image && typeof formData.image === 'string' && (
+                          <img src={formData.image} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                        )}
+                      </div>
+                      {validationErrors.image && (
+                        <p className="text-red-500 text-xs mt-1">{validationErrors.image}</p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Animal Icon</label>
-                      <input
-                        type="file"
-                        onChange={(e) => setFormData({...formData, icon: e.target.files?.[0] ?? ''})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
+                      <div className="flex items-center space-x-4">
+                        <input
+                          type="file"
+                          onChange={(e) => setFormData({...formData, icon: e.target.files?.[0] ?? ''})}
+                          className={`w-full border ${validationErrors.icon ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+                        />
+                        {formData.icon && typeof formData.icon !== 'string' && (
+                          <img src={URL.createObjectURL(formData.icon)} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                        )}
+                        {formData.icon && typeof formData.icon === 'string' && (
+                          <img src={formData.icon} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                        )}
+                      </div>
+                      {validationErrors.icon && (
+                        <p className="text-red-500 text-xs mt-1">{validationErrors.icon}</p>
+                      )}
                     </div>
                   </div>
                   
@@ -583,9 +646,12 @@ const StudyAbroadCMS = () => {
                       type="text"
                       value={formData.slug}
                       onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={`w-full border ${validationErrors.slug ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                       required
                     />
+                    {validationErrors.slug && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.slug}</p>
+                    )}
                   </div>
                 </>
               )}
@@ -598,18 +664,32 @@ const StudyAbroadCMS = () => {
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({...formData, title: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={`w-full border ${validationErrors.title ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                       required
                     />
+                    {validationErrors.title && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.title}</p>
+                    )}
                   </div>
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
-                    <input
-                      type="file"
-                      onChange={(e) => setFormData({...formData, logo: e.target.files?.[0] ?? ''})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    />
+                    <div className="flex items-center space-x-4">
+                      <input
+                        type="file"
+                        onChange={(e) => setFormData({...formData, logo: e.target.files?.[0] ?? ''})}
+                        className={`w-full border ${validationErrors.logo ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+                      />
+                      {formData.logo && typeof formData.logo !== 'string' && (
+                        <img src={URL.createObjectURL(formData.logo)} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                      )}
+                      {formData.logo && typeof formData.logo === 'string' && (
+                        <img src={formData.logo} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                      )}
+                    </div>
+                    {validationErrors.logo && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.logo}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -617,7 +697,7 @@ const StudyAbroadCMS = () => {
                     <select
                       value={formData.country?.toString()}
                       onChange={(e) => setFormData({...formData, country: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={`w-full border ${validationErrors.country ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                       required
                     >
                       <option value="">Select a country</option>
@@ -625,6 +705,9 @@ const StudyAbroadCMS = () => {
                         <option key={country.id} value={country.id.toString()}>{country.subtitle}</option>
                       ))}
                     </select>
+                    {validationErrors.country && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.country}</p>
+                    )}
                   </div>
                 </>
               )}
@@ -637,9 +720,12 @@ const StudyAbroadCMS = () => {
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({...formData, title: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={`w-full border ${validationErrors.title ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                       required
                     />
+                    {validationErrors.title && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.title}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -648,18 +734,32 @@ const StudyAbroadCMS = () => {
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
                       rows={3}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={`w-full border ${validationErrors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                       required
                     />
+                    {validationErrors.description && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.description}</p>
+                    )}
                   </div>
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Icon URL</label>
-                    <input
-                      type="file"
-                      onChange={(e) => setFormData({...formData, icon: e.target.files?.[0] ?? ''})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    />
+                    <div className="flex items-center space-x-4">
+                      <input
+                        type="file"
+                        onChange={(e) => setFormData({...formData, icon: e.target.files?.[0] ?? ''})}
+                        className={`w-full border ${validationErrors.icon ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+                      />
+                      {formData.icon && typeof formData.icon !== 'string' && (
+                        <img src={URL.createObjectURL(formData.icon)} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                      )}
+                      {formData.icon && typeof formData.icon === 'string' && (
+                        <img src={formData.icon} alt="Preview" className="w-16 h-16 object-cover rounded" />
+                      )}
+                    </div>
+                    {validationErrors.icon && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.icon}</p>
+                    )}
                   </div>
                   
                   <div>
@@ -667,7 +767,7 @@ const StudyAbroadCMS = () => {
                     <select
                       value={formData.country?.toString()}
                       onChange={(e) => setFormData({...formData, country: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className={`w-full border ${validationErrors.country ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                       required
                     >
                       <option value="">Select a country</option>
@@ -675,6 +775,9 @@ const StudyAbroadCMS = () => {
                         <option key={country.id} value={country.id.toString()}>{country.subtitle}</option>
                       ))}
                     </select>
+                    {validationErrors.country && (
+                      <p className="text-red-500 text-xs mt-1">{validationErrors.country}</p>
+                    )}
                   </div>
                 </>
               )}
@@ -709,7 +812,7 @@ const StudyAbroadCMS = () => {
 
       {/* Add loading overlay */}
       {isLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
           </div>

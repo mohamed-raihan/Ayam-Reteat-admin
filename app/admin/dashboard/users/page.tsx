@@ -226,9 +226,9 @@ const ContentManager = () => {
       // Reset file name
       setProfileImageFileName('');
     } catch (err) {
+      console.error('Error saving review:', err);
       setError('Failed to save review. Please try again.');
       toast.error('Failed to save review. Please try again.');
-      console.error('Error saving review:', err);
     } finally {
       setIsLoading(false);
     }
@@ -681,7 +681,7 @@ const ContentManager = () => {
                     }}
                     className="hidden"
                     id="profile-image-upload"
-                    required={!editingId}
+                    required
                   />
                   <label
                     htmlFor="profile-image-upload"

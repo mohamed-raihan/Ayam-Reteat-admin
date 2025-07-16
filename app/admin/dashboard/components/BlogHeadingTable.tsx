@@ -4,6 +4,7 @@ import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
 import { toast } from "react-toastify";
 import { TrashIcon } from "lucide-react";
+import { useEffect } from 'react';
 
 interface Heading {
   id: number;
@@ -18,6 +19,10 @@ const BlogHeadingTable = ({ headings, fetchHeadings }: { headings: Heading[], fe
         fetchHeadings();
         toast.success('Heading deleted successfully!');
     };
+
+    useEffect(()=>{
+      fetchHeadings();
+    },[])
 
   return (
     <div>

@@ -11,17 +11,41 @@ interface Heading {
   description?: string;
 }
 
-const BlogCreateForm = ({ fetchCategories, setShowModal }: { fetchCategories: () => void, setShowModal: (show: boolean) => void }) => {
+interface Blog {
+  id: number;
+  title: string;
+  author: string;
+  date: string;
+  blog_image: string;
+  blog_category: number | string;
+  blog_category_title?: string;
+  blog_heading: number | string;
+  blog_heading_title?: string;
+  is_active?: boolean;
+  country_name?: string;
+  description?: string;
+  time?: string;
+}
+
+type BlogCreateFormProps = {
+  fetchBlogs: () => void;
+  setShowModal: (show: boolean) => void;
+  editData?: Blog;
+  onSuccess?: () => void;
+  onClose?: () => void;
+};
+
+const BlogCreateForm = ({ fetchBlogs, setShowModal, editData, onSuccess, onClose }: BlogCreateFormProps) => {
   const [form, setForm] = useState({
-    country_name: '',
-    title: '',
-    date: '',
-    time: '',
+    country_name: editData?.country_name || '',
+    title: editData?.title || '',
+    date: editData?.date || '',
+    time: editData?.time || '',
     blog_image: null as File | null,
-    author: '',
-    description: '',
-    blog_category: '',
-    blog_heading: '',
+    author: editData?.author || '',
+    description: editData?.description || '',
+    blog_category: editData?.blog_category ? String(editData.blog_category) : '',
+    blog_heading: editData?.blog_heading ? String(editData.blog_heading) : '',
   });
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [headings, setHeadings] = useState<Heading[]>([]);
@@ -41,12 +65,26 @@ const BlogCreateForm = ({ fetchCategories, setShowModal }: { fetchCategories: ()
         setHeadings(headRes.data);
       } catch (err) {
         console.log(err);
-        
         // ignore for now
       }
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    if (editData) {
+      setForm({
+        country_name: editData.country_name || '',
+        title: editData.title || '',
+        date: editData.date || '',
+        time: editData.time || '',
+        blog_image: null,
+        author: editData.author || '',
+        description: editData.description || '',
+        blog_category: editData.blog_category ? String(editData.blog_category) : '',
+        blog_heading: editData.blog_heading ? String(editData.blog_heading) : '',
+      });
+    }
+  }, [editData]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -70,13 +108,24 @@ const BlogCreateForm = ({ fetchCategories, setShowModal }: { fetchCategories: ()
       Object.entries(form).forEach(([key, value]) => {
         if (value) formData.append(key, value);
       });
-      await api.post(API_URL.BLOGS.POST_BLOGS, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setSuccess('Blog created successfully!');
-      fetchCategories();
+      if (editData) {
+        // Edit mode
+        await api.put(API_URL.BLOGS.PATCH_BLOGS(editData.id.toString()), formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        setSuccess('Blog updated successfully!');
+        toast.success('Blog updated successfully!');
+      } else {
+        // Create mode
+        await api.post(API_URL.BLOGS.POST_BLOGS, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        setSuccess('Blog created successfully!');
+        toast.success('Blog created successfully!');
+      }
+      fetchBlogs();
       setShowModal(false);
-      toast.success('Blog created successfully!');
+      if (onSuccess) onSuccess();
       setForm({
         country_name: '',
         title: '',
@@ -90,8 +139,8 @@ const BlogCreateForm = ({ fetchCategories, setShowModal }: { fetchCategories: ()
       });
     } catch (err) {
       console.log(err);
-      setError('Failed to create blog.');
-      toast.error('Failed to create blog.');
+      setError(editData ? 'Failed to update blog.' : 'Failed to create blog.');
+      toast.error(editData ? 'Failed to update blog.' : 'Failed to create blog.');
       setLoading(false);
     }
   };
@@ -102,7 +151,7 @@ const BlogCreateForm = ({ fetchCategories, setShowModal }: { fetchCategories: ()
       <input type="text" name="title" value={form.title} onChange={handleChange} placeholder="Title" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" required />
       <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" required />
       <input type="time" name="time" value={form.time} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" required />
-      <input type="file" name="blog_image" accept="image/*" onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" required />
+      <input type="file" name="blog_image" accept="image/*" onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
       <input type="text" name="author" value={form.author} onChange={handleChange} placeholder="Author" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" required />
       <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" rows={4} required />
       <select name="blog_category" value={form.blog_category} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" required>
@@ -118,7 +167,7 @@ const BlogCreateForm = ({ fetchCategories, setShowModal }: { fetchCategories: ()
         ))}
       </select>
       <button type="submit" className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50" disabled={loading}>
-        {loading ? 'Creating...' : 'Create Blog'}
+        {loading ? (editData ? 'Updating...' : 'Creating...') : (editData ? 'Update Blog' : 'Create Blog')}
       </button>
       {success && <div className="text-green-600 text-sm">{success}</div>}
       {error && <div className="text-red-600 text-sm">{error}</div>}

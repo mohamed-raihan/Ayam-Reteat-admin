@@ -4,6 +4,7 @@ import { Plus, Search, Video, Star, Edit, Trash2 } from 'lucide-react';
 import api from '@/app/services/api';
 import { API_URL } from '@/app/services/api_url';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 type SuccessVideos = {
   id: number;
@@ -142,17 +143,20 @@ const ContentManager = () => {
 
       if (editingId) {
         await api.put(API_URL.HOME.UPDATE_SUCCESS_VIDEO(editingId.toString()), formData);
-        setSuccess('Video updated successfully!');
+        // setSuccess('Video updated successfully!');
+        toast.success("Video updated successfully")
       } else {
         await api.post(API_URL.HOME.ADD_SUCCESS_VIDEO, formData);
-        setSuccess('Video added successfully!');
+        // setSuccess('Video added successfully');
+        toast.success("Video added successfully")
       }
 
       setShowAddModal(false);
       fetchSuccessVideos();
       resetVideoForm();
     } catch (err) {
-      setError('Failed to save video. Please try again.');
+      // setError('Failed to save video. Please try again.');
+      toast.error('Failed to save video. Please try again.');
       console.error('Error saving video:', err);
     } finally {
       setIsLoading(false);
@@ -175,17 +179,17 @@ const ContentManager = () => {
 
       if (editingId) {
         await api.put(API_URL.HOME.UPDATE_REVIEW(editingId.toString()), formData);
-        setSuccess('Review updated successfully!');
+        toast.success('Review updated successfully!');
       } else {
         await api.post(API_URL.HOME.ADD_REVIEW, formData);
-        setSuccess('Review added successfully!');
+        toast.success('Review added successfully!');
       }
 
       setShowAddModal(false);
       fetchReviews();
       resetReviewForm();
     } catch (err) {
-      setError('Failed to save review. Please try again.');
+      toast.error('Failed to save review. Please try again.');
       console.error('Error saving review:', err);
     } finally {
       setIsLoading(false);
@@ -199,10 +203,10 @@ const ContentManager = () => {
     setError(null);
     try {
       await api.delete(API_URL.HOME.DELETE_SUCCESS_VIDEO(id.toString()));
-      setSuccess('Video deleted successfully!');
+      toast.success('Video deleted successfully!');
       fetchSuccessVideos();
     } catch (err) {
-      setError('Failed to delete video. Please try again.');
+      toast.error('Failed to delete video. Please try again.');
       console.error('Error deleting video:', err);
     } finally {
       setIsLoading(false);
@@ -216,10 +220,10 @@ const ContentManager = () => {
     setError(null);
     try {
       await api.delete(API_URL.HOME.DELETE_REVIEW(id.toString()));
-      setSuccess('Review deleted successfully!');
+      toast.success('Review deleted successfully!');
       fetchReviews();
     } catch (err) {
-      setError('Failed to delete review. Please try again.');
+      toast.error('Failed to delete review. Please try again.');
       console.error('Error deleting review:', err);
     } finally {
       setIsLoading(false);

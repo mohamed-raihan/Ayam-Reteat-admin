@@ -147,10 +147,18 @@ const ContentManager = () => {
     // setSuccess(null);
 
     try {
+      console.log(videoForm);
+      
       const formData = new FormData();
       formData.append('name', videoForm.name);
-      if (videoForm.video) formData.append('video', videoForm.video);
-      if (videoForm.thumbnail) formData.append('thumbnail', videoForm.thumbnail);
+      // if (videoForm.video) formData.append('video', videoForm.video);
+      // if (videoForm.thumbnail) formData.append('thumbnail', videoForm.thumbnail);
+      if ((!editingId || videoForm.video instanceof File) && videoForm.video) {
+        formData.append('video', videoForm.video);
+      }
+      if ((!editingId || videoForm.thumbnail instanceof File) && videoForm.thumbnail) {
+        formData.append('thumbnail', videoForm.thumbnail);
+      }
       formData.append('order', videoForm.order.toString());
       formData.append('is_active', videoForm.is_active.toString());
 
@@ -181,7 +189,7 @@ const ContentManager = () => {
       setVideoFileName('');
       setThumbnailFileName('');
     } catch (err) {
-      setError('Failed to save video. Please try again.');
+      toast.error('Failed to save video. Please try again.');
       console.error('Error saving video:', err);
     } finally {
       setIsLoading(false);
@@ -227,7 +235,7 @@ const ContentManager = () => {
       setProfileImageFileName('');
     } catch (err) {
       console.error('Error saving review:', err);
-      setError('Failed to save review. Please try again.');
+      // setError('Failed to save review. Please try again.');
       toast.error('Failed to save review. Please try again.');
     } finally {
       setIsLoading(false);
@@ -245,7 +253,7 @@ const ContentManager = () => {
       // setSuccess('Video deleted successfully!');
       fetchSuccessVideos();
     } catch (err) {
-      setError('Failed to delete video. Please try again.');
+      toast.error('Failed to delete video. Please try again.');
       console.error('Error deleting video:', err);
     } finally {
       setIsLoading(false);
@@ -263,7 +271,7 @@ const ContentManager = () => {
       // setSuccess('Review deleted successfully!');
       fetchReviews();
     } catch (err) {
-      setError('Failed to delete review. Please try again.');
+      toast.error('Failed to delete review. Please try again.');
       console.error('Error deleting review:', err);
     } finally {
       setIsLoading(false);

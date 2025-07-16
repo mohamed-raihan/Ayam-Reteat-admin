@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import BlogCategoryForm from "../components/BlogCategoryForm";
 import BlogHeadingForm from "../components/BlogHeadingForm";
 import BlogCreateForm from "../components/BlogCreateForm";
-import BlogList from "../components/BlogList";
+import BlogList, { Blog } from "../components/BlogList";
 import BlogCategoryTable from "../components/BlogCategoryTable";
 import BlogHeadingTable from "../components/BlogHeadingTable";
 import BlogInnerTable, { BlogCategory } from "../components/Blog-innerTable";
@@ -17,16 +17,6 @@ const TABS = [
   { key: "blogs", label: "Blogs" },
   { key: "blogs inner", label: "Blogs Inner" },
 ];
-
-interface Blog {
-  id: number;
-  title: string;
-  content: string;
-  category: number;
-  image?: string;
-  created_at?: string;
-  updated_at?: string;
-}
 
 // interface Category {
 //   id: number;
@@ -86,13 +76,12 @@ export default function BlogManagementPage() {
     setBlogInners(response.data);
   };
 
-  console.log(blogInners);
-  
+  console.log(activeTab);
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "blogs":
-        return <BlogList  fetchBlogs={fetchBlogs} />;
+        return <BlogList blogs={blogs} fetchBlogs={fetchBlogs} />;
       case "categories":
         return <BlogCategoryTable categories={categories} fetchCategories={fetchCategories} />;
       case "headings":
@@ -176,7 +165,7 @@ export default function BlogManagementPage() {
             >
               ×
             </button>
-            {activeTab === "blogs" && <BlogCreateForm fetchCategories={fetchBlogs} setShowModal={setShowModal}/>}
+            {activeTab === "blogs" && <BlogCreateForm fetchBlogs={fetchBlogs} setShowModal={setShowModal}/>}
             {activeTab === "categories" && <BlogCategoryForm fetchCategories={fetchCategories} setShowModal={setShowModal} />}
             {activeTab === "headings" && <BlogHeadingForm fetchHeadings={fetchHeadings} setShowModal={setShowModal} />}
             {activeTab === "blogs inner" && <BlogInnerForm fetchBlogInners={fetchBlogInners} setShowModal={setShowModal} />}

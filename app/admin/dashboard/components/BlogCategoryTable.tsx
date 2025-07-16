@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import api from "@/app/services/api";
 import { API_URL } from "@/app/services/api_url";
 import { toast } from "react-toastify";
@@ -18,6 +18,9 @@ const BlogCategoryTable = ({ categories, fetchCategories }: { categories: BlogCa
       toast.error('Failed to delete category.');
     }
   };
+  useEffect(()=>{
+    fetchCategories();
+  },[])
   return (
     <div>
       {categories.length > 0 ? <div className="flex gap-2 w-full bg-white rounded-md px-4 py-2">

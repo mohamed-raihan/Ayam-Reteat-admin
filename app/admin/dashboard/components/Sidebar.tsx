@@ -16,12 +16,12 @@ const navLinks = [
   {
     name: "Homepage",
     icon: <FaUsers />,
-    href: "/admin/dashboard/users",
+    href: "/admin/dashboard/homepage",
   },
   {
     name: "Contact Us",
     icon: <FaBook />,
-    href: "/admin/dashboard/reservation",
+    href: "/admin/dashboard/contact-us",
   },
   // {
   //   name: "About Us",
@@ -31,12 +31,12 @@ const navLinks = [
   {
     name: "Services",
     icon: <MdSupervisedUserCircle  />,
-    href: "/admin/dashboard/referral",
+    href: "/admin/dashboard/service-management",
   },
   {
     name: "Study Abroad",
     icon: <FaTasks />,
-    href: "/admin/dashboard/create-membership",
+    href: "/admin/dashboard/study-abroad",
   },
   {
     name: "Blogs",

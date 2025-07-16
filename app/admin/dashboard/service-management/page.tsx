@@ -177,7 +177,7 @@ export default function ReferralServicePage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="">
       <div className="flex justify-between items-center rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 p-8 mb-8 shadow-lg">
         <h1 className="text-3xl font-bold text-white">Services Management</h1>
         <button
@@ -189,7 +189,7 @@ export default function ReferralServicePage() {
       </div>
       {error && <div className="mb-4 text-red-600">{error}</div>}
       {success && <div className="mb-4 text-green-600">{success}</div>}
-      <div className="bg-white rounded shadow p-6">
+      <div className="bg-white rounded-2xl shadow p-6">
         {loading ? (
           <div>Loading...</div>
         ) : (
@@ -258,8 +258,8 @@ export default function ReferralServicePage() {
       </div>
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-lg relative">
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
               onClick={closeModal}
@@ -275,7 +275,7 @@ export default function ReferralServicePage() {
                   name="title"
                   value={form.title || ''}
                   onChange={handleInputChange}
-                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                  className="w-full border border-gray-300 rounded-md rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300"
                   required
                 />
               </div>
@@ -287,7 +287,7 @@ export default function ReferralServicePage() {
                   name="image"
                   accept="image/*"
                   onChange={handleInputChange}
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
                 />
                 {form.image && (
                     <Image
@@ -297,7 +297,7 @@ export default function ReferralServicePage() {
                           : (form.image as string)
                       }
                       alt="Thumbnail Preview"
-                      className='border rounded-lg border'
+                      className='border rounded-lg border mt-2 w-30'
                       width={50}
                       height={50}
                     />
@@ -310,7 +310,7 @@ export default function ReferralServicePage() {
                   name="description"
                   value={form.description || ''}
                   onChange={handleInputChange}
-                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300"
                   rows={3}
                   required
                 />
@@ -323,7 +323,7 @@ export default function ReferralServicePage() {
                     name="alt_img_text"
                     value={form.alt_img_text || ''}
                     onChange={handleInputChange}
-                    className="w-full border rounded px-3 py-2"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
                 <div>
@@ -333,7 +333,7 @@ export default function ReferralServicePage() {
                     name="alt_img_title"
                     value={form.alt_img_title || ''}
                     onChange={handleInputChange}
-                    className="w-full border rounded px-3 py-2"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
                 <div>
@@ -343,7 +343,7 @@ export default function ReferralServicePage() {
                     name="alt_img_caption"
                     value={form.alt_img_caption || ''}
                     onChange={handleInputChange}
-                    className="w-full border rounded px-3 py-2"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
                 <div>
@@ -353,7 +353,7 @@ export default function ReferralServicePage() {
                     name="alt_img_description"
                     value={form.alt_img_description || ''}
                     onChange={handleInputChange}
-                    className="w-full border rounded px-3 py-2"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
               </div>
@@ -364,13 +364,13 @@ export default function ReferralServicePage() {
                   name="slug"
                   value={form.slug || ''}
                   onChange={handleInputChange}
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
                   required
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-purple-600 text-white py-2 rounded font-semibold hover:bg-purple-700 transition"
+                className="w-full bg-purple-600 text-white py-2 rounded-md font-semibold hover:bg-purple-700 transition"
                 disabled={loading}
               >
                 {loading ? 'Saving...' : 'Save'}

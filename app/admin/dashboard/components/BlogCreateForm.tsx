@@ -53,6 +53,8 @@ const BlogCreateForm = ({ fetchBlogs, setShowModal, editData, onSuccess, onClose
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  console.log(onClose);
+
   useEffect(() => {
     // Fetch categories and headings
     const fetchData = async () => {
